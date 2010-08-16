@@ -8,7 +8,7 @@ import javax.management.modelmbean._
  * {@code Managed} annotation.
  * 
  * <p>Annotated <strong>def</strong>s become <em>operations</em>, annotated
- * <strong>var</strong>s become <em>attribues</em> and annotated
+ * <strong>var</strong>s become <em>attributes</em> and annotated
  * <strong>val</strong>s become <em>read-only attributes</em>.</p>
  * 
  * @see Managed
@@ -30,44 +30,45 @@ object AnnotationMBeanInfoAssembler extends MBeanInfoAssembler
         desc.setField("descriptorType", "attribute")
         desc.setField("getMethod", field.getName)
         if (supportsWriting) desc.setField("setMethod", field.getName + "_$eq")
-        for (timeLimit <- CurrencyTimeLimitTranslator.translate(managed.currencyTimeLimit))
+        for (timeLimit <- translateTimeLimit(managed))
           desc.setField("currencyTimeLimit", timeLimit)
         
-        new ModelMBeanAttributeInfo(field.getName,
-                                    field.getType.getName, 
-                                    description,
-                                    true,
-                                    supportsWriting,
-                                    false,
-                                    desc)
+        new ModelMBeanAttributeInfo(field.getName, field.getType.getName, description,
+                                    true, supportsWriting, false, desc)
       }
     attrs.toArray[ModelMBeanAttributeInfo]
   }
   
   private def hasWriter(c: Class[_], fieldName: String) =
-    c.getMethods().find(_.getName == fieldName+"_$eq") != None
+    c.getMethods().exists(_.getName == fieldName+"_$eq")
     
   
   def operations(c: Class[_], attrs: Array[ModelMBeanAttributeInfo]) = {
     def isOperation(m: Method) = m.isAnnotationPresent(classOf[Managed])
-    def isAttributeMethod(m: Method) = attrs.exists(attr => attr.getDescriptor.getFieldValue("getMethod") == m.getName || attr.getDescriptor.getFieldValue("setMethod") == m.getName)
-    c.getMethods
-     .filter(m => isOperation(m) || isAttributeMethod(m))
-     .map(m => createOperationInfo(m))
+    def isAttributeMethod(m: Method) = attrs.exists { attr =>
+      attr.getDescriptor.getFieldValue("getMethod") == m.getName ||
+      attr.getDescriptor.getFieldValue("setMethod") == m.getName
+    }
+    c.getMethods.collect {
+      case m if isOperation(m) || isAttributeMethod(m) => createOperationInfo(m) 
+    }
   }
   
   private def createOperationInfo(method: Method): ModelMBeanOperationInfo = {
     val managed = method.getAnnotation(classOf[Managed])
     def description = if (managed == null) method.getName else managed.description
-    val desc = new DescriptorSupport
-    
+    val desc = new DescriptorSupport 
     desc.setField("name", method.getName)
     desc.setField("descriptorType", "operation")
     desc.setField("role", "operation")
-    if (managed != null)
-      for (timeLimit <- CurrencyTimeLimitTranslator.translate(managed.currencyTimeLimit))
-        desc.setField("currencyTimeLimit", timeLimit)
+    for (timeLimit <- translateTimeLimit(managed))
+      desc.setField("currencyTimeLimit", timeLimit)
     new ModelMBeanOperationInfo(description, method, desc)
+  }
+  
+  private def translateTimeLimit(m: Managed) = {
+    if (m eq null) None
+    else CurrencyTimeLimitTranslator.translate(m.currencyTimeLimit)
   }
 }
 
