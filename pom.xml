@@ -98,7 +98,9 @@
 				<configuration>
 					<scalaVersion>${scala.version}</scalaVersion>
 					<args>
-						<arg>-target:jvm-1.5</arg>
+						<arg>-make:transitivenocp</arg>
+						<arg>-dependencyfile</arg>
+						<arg>${project.build.directory}/.scala_dependencies</arg>
 					</args>
 				</configuration>
 			</plugin>
