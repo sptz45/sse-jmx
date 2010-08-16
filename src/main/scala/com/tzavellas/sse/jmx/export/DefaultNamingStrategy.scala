@@ -5,33 +5,25 @@ import javax.management.ObjectName
 /**
  * The default implementation of <code>ObjectNamingStrategy</code>.
  * 
- * <p>The format of the produced <code>ObjectName</code> is: <i>domain:type=type-value,key1=value1,...</i>,
- * where <i>domain</i> is the specified <code>domain</code> and <i>type-value</i> is the short
- * name of the specified class or a value specified in the key properties using the <code>type</code>
- * key.</p>
+ * <p>The format of the produced <code>ObjectName</code> is: <i>domain-value:type=type-value</i>,
+ * where <i>domain-value</i> is the specified <code>domain</code> and <i>type-value</i> is the
+ * simple name of the specified class.</p>
  * 
- * @param domain the domain that will be used for constructing the <code>ObjectNames</code>.
- *               If <code>None</code> then the domain used will be the package name of each
- *               specified class. The default value is <code>None</code>.
+ * @param domain the domain that will be used for constructing the {@code ObjectName}
+ *               instances. If {@code null} (the default) then the domain used will
+ *               be the package name of each class.
  * 
- * @see ObjectNamingStrategy
  */
-class DefaultNamingStrategy(domain: Option[String] = None) extends ObjectNamingStrategy {
+class DefaultNamingStrategy(domain: String = null) extends ObjectNamingStrategy {
   
+  /** This implementation create {@code ObjectName} for all classes. */
   def canCreateNameFor(clazz: Class[_]) = true
   
-  def nameFor(clazz: Class[_], keyProperties: Map[String, Any]) = {
-    val tp = keyProperties.getOrElse("type", clazz.getSimpleName)
-    val dn = domain.getOrElse(clazz.getPackage.getName)
-    
-    val keysBuffer = new StringBuilder(",")
-    
-    for ((key, value) <- keyProperties if key != "type")
-      keysBuffer.append(key).append("=").append(value).append(",")
-    
-    // remove the trailing ","
-    keysBuffer.deleteCharAt(keysBuffer.length -1)
-    
-    new ObjectName(dn + ":type=" + tp + keysBuffer.toString)
+  def nameFor(clazz: Class[_]) = {
+    val domain = this.domain match {
+      case null => clazz.getPackage.getName
+      case _    => this.domain
+    }
+    new ObjectName(domain + ":type=" + clazz.getSimpleName)
   }
 }
