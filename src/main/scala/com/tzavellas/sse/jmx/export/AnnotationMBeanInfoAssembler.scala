@@ -60,13 +60,13 @@ object AnnotationMBeanInfoAssembler extends MBeanInfoAssembler with MBeanModelEx
 }
 
 
-private object CurrencyTimeLimitTranslator {
+private object CurrencyTimeLimitTranslator {  
   
   private val decade = 315360000
   
   def translate(seconds: Int) = seconds match {
     case _ if seconds < 0 => None
-    case 0 => Some(decade)
-    case _ => Some(seconds)
+    case 0                => Some(decade)
+    case _                => Some(seconds)
   }   
 }

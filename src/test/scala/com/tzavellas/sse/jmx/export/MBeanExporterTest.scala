@@ -1,5 +1,6 @@
 package com.tzavellas.sse.jmx.export
 
+import javax.management.ObjectName
 import org.junit.{Test, After}
 import org.junit.Assert._
 
@@ -38,17 +39,21 @@ class MBeanExporterTest {
   
   @Test
   def should_use_the_object_name_in_annotation() {
-    assertEquals("com.tzavellas:type=Test", exporter.objectName(classOf[ObjectNameViaAnnotation]).toString)
+    assertObjectName("com.tzavellas:type=Test", exporter.objectName(classOf[ObjectNameViaAnnotation]))
   }
   
   @Test
   def should_use_default_strategy_if_annotation_has_empty_value() {
-    assertEquals("com.tzavellas.sse.jmx.export:type=EmptyAnnotation", exporter.objectName(classOf[EmptyAnnotation]).toString)
+    assertObjectName("com.tzavellas.sse.jmx.export:type=EmptyAnnotation", exporter.objectName(classOf[EmptyAnnotation]))
   }
   
   @Test
   def should_use_default_strategy_if_no_annotation_present() {
-    assertEquals("com.tzavellas.sse.jmx.export:type=Configuration", exporter.objectName(classOf[Configuration]).toString)
+    assertObjectName("com.tzavellas.sse.jmx.export:type=Configuration", exporter.objectName(classOf[Configuration]))
+  }
+  
+  def assertObjectName(expected: String, actual: ObjectName) {
+    assertEquals(expected, actual.toString)
   }
 }
 

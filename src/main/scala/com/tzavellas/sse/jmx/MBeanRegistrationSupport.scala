@@ -5,7 +5,7 @@ import javax.management._
 /**
  * A trait that provides a robust way for registering MBeans.
  * 
- * @see RegistrationBehavior
+ * @see IfAlreadyExists
  */
 trait MBeanRegistrationSupport {
   
@@ -29,7 +29,7 @@ trait MBeanRegistrationSupport {
       case Ignore  => return
       case Fail    => throw new InstanceAlreadyExistsException(name.toString)
       case Replace =>
-        try { server.unregisterMBean(name) }
+        try   { server.unregisterMBean(name) }
         catch { case ignored: InstanceNotFoundException => () }
     }
     server.registerMBean(mbean, name)

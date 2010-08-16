@@ -1,6 +1,6 @@
 package com.tzavellas.sse.jmx.export
 
-import javax.management.{Descriptor, MBeanOperationInfo, MBeanException}
+import javax.management.MBeanOperationInfo
 import javax.management.modelmbean._
 
 /**
@@ -10,7 +10,7 @@ import javax.management.modelmbean._
  * 
  * @see http://weblogs.java.net/blog/2007/02/13/removing-getters-model-mbean-operations
  */
-private[jmx] class NoGetterAndSetterMBeanInfo(info: ModelMBeanInfo) extends ModelMBeanInfoSupport(info) {
+private class NoGetterAndSetterMBeanInfo(info: ModelMBeanInfo) extends ModelMBeanInfoSupport(info) {
     
   override def clone() = new NoGetterAndSetterMBeanInfo(this)
   
@@ -19,16 +19,17 @@ private[jmx] class NoGetterAndSetterMBeanInfo(info: ModelMBeanInfo) extends Mode
     def isGetterOrSetter(role: String) = ! "getter".equalsIgnoreCase(role) && ! "setter".equalsIgnoreCase(role)
     
     def role(info: MBeanOperationInfo) = info.getDescriptor.getFieldValue("role").asInstanceOf[String]
-      
-    val ops = getOperations.filterNot(info => isGetterOrSetter(role(info)))
-                           .map(_.asInstanceOf[ModelMBeanOperationInfo])
+
+    val operationsWithNoGettersOrSetters = getOperations.collect {
+      case info if !isGetterOrSetter(role(info)) => info.asInstanceOf[ModelMBeanOperationInfo]
+    }
       
     return new ModelMBeanInfoSupport(
       getClassName,
       getDescription,
       getAttributes.asInstanceOf[Array[ModelMBeanAttributeInfo]],
       getConstructors.asInstanceOf[Array[ModelMBeanConstructorInfo]],
-      ops,
+      operationsWithNoGettersOrSetters,
       getNotifications.asInstanceOf[Array[ModelMBeanNotificationInfo]],
       getMBeanDescriptor)
   }
