@@ -3,7 +3,7 @@ package com.tzavellas.sse.jmx.export
 import java.lang.management.ManagementFactory
 import javax.management.{ObjectName, MBeanServer}
 import javax.management.modelmbean.{ModelMBeanInfo, RequiredModelMBean}
-import com.tzavellas.sse.jmx.{JmxUtils,MBeanRegistrationSupport} 
+import com.tzavellas.sse.jmx.MBeanRegistrationSupport 
 
 class MBeanExporter (
   val server: MBeanServer = ManagementFactory.getPlatformMBeanServer)

@@ -1,4 +1,4 @@
-package com.tzavellas.sse.jmx
+package com.tzavellas.sse.jmx.export
 
 import org.junit.Test
 import org.junit.Assert._

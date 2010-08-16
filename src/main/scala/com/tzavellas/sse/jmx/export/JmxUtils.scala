@@ -1,6 +1,6 @@
-package com.tzavellas.sse.jmx
+package com.tzavellas.sse.jmx.export
 
-object JmxUtils {
+private object JmxUtils {
   
   def isStandardMBean(c: Class[_]) = hasMBeanInterface(c, "MBean")
   
