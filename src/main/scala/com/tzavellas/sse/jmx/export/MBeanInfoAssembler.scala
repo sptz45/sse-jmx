@@ -2,6 +2,10 @@ package com.tzavellas.sse.jmx.export
 
 import javax.management.modelmbean._
 
+
+/**
+ * Generates a {@code ModelMBeanInfo} from a class.
+ */
 trait MBeanInfoAssembler {
   
   this: MBeanModelExtractor =>

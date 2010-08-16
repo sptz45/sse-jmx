@@ -3,7 +3,19 @@ package com.tzavellas.sse.jmx.export
 import java.lang.reflect.Method
 import javax.management.modelmbean._
 
-object AnnotationMBeanInfoAssembler extends MBeanInfoAssembler with MBeanModelExtractor {
+/**
+ * Creates {@code ModelMBeanInfo} from classes that are annotated with the
+ * {@code Managed} annotation.
+ * 
+ * <p>Annotated <strong>def</strong>s become <em>operations</em>, annotated
+ * <strong>var</strong>s become <em>attribues</em> and annotated
+ * <strong>val</strong>s become <em>read-only attributes</em>.</p>
+ * 
+ * @see Managed
+ * @see ManagedResource
+ */ 
+object AnnotationMBeanInfoAssembler extends MBeanInfoAssembler
+                                       with MBeanModelExtractor {
   
   def attributes(c: Class[_]) = {
     val attrs =

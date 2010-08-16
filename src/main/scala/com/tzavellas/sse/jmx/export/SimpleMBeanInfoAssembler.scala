@@ -3,6 +3,22 @@ package com.tzavellas.sse.jmx.export
 import javax.management.modelmbean._
 import java.lang.reflect.Method
 
+/**
+ * Creates {@code ModelMBeanInfo} from classes using a simple set of conventions.
+ * 
+ * <p>This implementation will generate:</p>
+ * <ul>
+ * <li>a operation for every method that returns Unit</li>
+ * <li>an attribute for every var</li>
+ * <li>a read-only attribute for every method that takes no arguments and returns
+ * a non-Unit value</li>
+ * </ul>
+ * 
+ * <p>The methods: {@code toString}, {@code getClass}, {@code clone}, {@code hashCode},
+ * {@code wait}, {@code notify}, {@code notifyAll} and {@code equals} are not used
+ * for the generation of the model MBean.</p> 
+ * 
+ */
 object SimpleMBeanInfoAssembler extends MBeanInfoAssembler with MBeanModelExtractor {
   
   val excludedAttributes = List("toString", "getClass", "clone", "hashCode")
