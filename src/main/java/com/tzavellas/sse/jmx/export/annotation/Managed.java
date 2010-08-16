@@ -1,4 +1,4 @@
-package com.tzavellas.sse.jmx.export;
+package com.tzavellas.sse.jmx.export.annotation;
 
 import java.lang.annotation.*;
 

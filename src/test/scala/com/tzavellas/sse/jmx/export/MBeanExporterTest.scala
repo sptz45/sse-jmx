@@ -7,14 +7,13 @@ class MBeanExporterTest {
   
   import MBeanExporterTest._
   
-  object exporter extends MBeanExporter with PlatformMBeanServer
-  
+  val exporter = new MBeanExporter
   val server = exporter.server
 
   @Test
   def register_an_object_as_model_mbean() {
     val conf = new Configuration
-    exporter.register(conf)
+    exporter.export(conf)
     assertEquals(conf.reload, server.invoke(exporter.objectName(conf.getClass), "reload", Array(), Array()))
     assertEquals(conf.size, server.invoke(exporter.objectName(conf.getClass), "size", Array(), Array()))
     assertEquals(conf.size, server.getAttribute(exporter.objectName(conf.getClass), "size"))
@@ -24,7 +23,7 @@ class MBeanExporterTest {
   @Test
   def register_a_standard_mbean() {
     val std = new Standard
-    exporter.register(std)
+    exporter.export(std)
     assertEquals(std.operation, server.invoke(exporter.objectName(std.getClass), "operation", Array(), Array()))
     server.unregisterMBean(exporter.objectName(classOf[Standard]))
   }
@@ -32,7 +31,7 @@ class MBeanExporterTest {
   @Test
   def register_a_mx_mbean() {
     val s = new Simple
-    exporter.register(s)
+    exporter.export(s)
     assertEquals(s.mxOperation, server.invoke(exporter.objectName(s.getClass), "mxOperation", Array(), Array()))
     server.unregisterMBean(exporter.objectName(classOf[Simple]))
   }

@@ -1,4 +1,4 @@
-package com.tzavellas.sse.jmx.export
+package com.tzavellas.sse.jmx
 
 import org.junit.{Test, After}
 import org.junit.Assert._
@@ -35,7 +35,7 @@ class MBeanRegistrationSupportTest {
     assertMBeanIsRegistered(mbean)
     
     val mbean1 = new Simple(1)
-    registrar.registerMBean(mbean1, objectName, RegistrationBehavior.Ignore)
+    registrar.registerMBean(mbean1, objectName, IfAlreadyExists.Ignore)
     assertMBeanIsRegistered(mbean) // the first mbean remains registered
   }
   
@@ -45,7 +45,7 @@ class MBeanRegistrationSupportTest {
     assertMBeanIsRegistered(mbean)
     
     val mbean1 = new Simple(1)
-    registrar.registerMBean(mbean1, objectName, RegistrationBehavior.Replace)
+    registrar.registerMBean(mbean1, objectName, IfAlreadyExists.Replace)
     assertMBeanIsRegistered(mbean1)
   }
   
@@ -56,7 +56,11 @@ class MBeanRegistrationSupportTest {
 
 object MBeanRegistrationSupportTest {
   
-  object registrar extends MBeanRegistrationSupport with PlatformMBeanServer
+  import java.lang.management.ManagementFactory
+  
+  object registrar extends MBeanRegistrationSupport {
+    val server = ManagementFactory.getPlatformMBeanServer
+  }
 
   trait SimpleMBean {
     def operation: Int

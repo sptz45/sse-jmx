@@ -6,7 +6,7 @@ trait MBeanModelExtractor {
   
   def description(c: Class[_]): String =
     c.getAnnotation(classOf[ManagedResource]) match {
-      case mr: ManagedResource if mr.description != "" => mr.description
+      case mr: annotation.ManagedResource if mr.description != "" => mr.description
       case _ => c.getSimpleName
     }
   
