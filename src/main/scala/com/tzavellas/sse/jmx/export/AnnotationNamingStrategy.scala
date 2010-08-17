@@ -1,6 +1,7 @@
 package com.tzavellas.sse.jmx.export
 
 import javax.management.ObjectName
+import annotation.{ManagedResource => JmxResource} /* unnecessary, but avoids Eclipse bug :-( */
 
 /**
  * Derive an object name from the {@code objectName} value of the
@@ -13,8 +14,8 @@ private object AnnotationNamingStrategy extends ObjectNamingStrategy {
    * {@code objectName} value of a {@literal @ManagedResource} annotation.
    */
   def canCreateNameFor(clazz: Class[_]) = { 
-    if (clazz.isAnnotationPresent(classOf[ManagedResource]))
-      clazz.getAnnotation(classOf[ManagedResource]).objectName != ""
+    if (clazz.isAnnotationPresent(classOf[JmxResource]))
+      clazz.getAnnotation(classOf[JmxResource]).objectName != ""
     else
       false
   }
@@ -25,7 +26,7 @@ private object AnnotationNamingStrategy extends ObjectNamingStrategy {
    * the specified class.
    */
   def nameFor(clazz: Class[_]): ObjectName = {
-    val managedResource = clazz.getAnnotation(classOf[ManagedResource])
+    val managedResource = clazz.getAnnotation(classOf[JmxResource])
     assert(managedResource != null)
     new ObjectName(managedResource.objectName)
   }
