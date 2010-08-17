@@ -2,15 +2,20 @@ package com.tzavellas.sse.jmx.export.annotation;
 
 import java.lang.annotation.*;
 
+/**
+ * Mark a Scala element as a JMX attribute or operation.
+ * 
+ * <p>Annotated <strong>def</strong>s become <em>operations</em>, annotated
+ * <strong>var</strong>s become <em>attributes</em> and annotated
+ * <strong>val</strong>s become <em>read-only attributes</em>.</p>
+ */
 @Documented
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.METHOD})
 public @interface Managed {
 	
-  /**
-   * The description of the attribute or operation.
-   */
+  /** The description of the attribute or operation. */
 	String description() default "";
 	
 	/**
