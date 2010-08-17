@@ -16,9 +16,6 @@ import javax.management.ObjectName
  */
 class DefaultNamingStrategy(domain: String = null) extends ObjectNamingStrategy {
   
-  /** This implementation create {@code ObjectName} for all classes. */
-  def canCreateNameFor(clazz: Class[_]) = true
-  
   def nameFor(clazz: Class[_]) = {
     val domain = this.domain match {
       case null => clazz.getPackage.getName

@@ -10,12 +10,6 @@ import javax.management.ObjectName
 trait ObjectNamingStrategy {
   
   /**
-   * Whether this strategy can create an {@code ObjectName} for the specified
-   * class.
-   */
-  def canCreateNameFor(clazz: Class[_]): Boolean
-  
-  /**
    * Create an <code>ObjectName</code> to be used when registering objects of the
    * specified class to JMX.
    * 
