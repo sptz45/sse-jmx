@@ -3,17 +3,19 @@ package com.tzavellas.sse.jmx.export
 import java.lang.management.ManagementFactory
 import javax.management.{ObjectName, MBeanServer}
 import javax.management.modelmbean.RequiredModelMBean
-import com.tzavellas.sse.jmx.MBeanRegistrationSupport 
+import com.tzavellas.sse.jmx.{MBeanRegistrationSupport, IfAlreadyExists} 
 
 /**
  * Exports objects to JMX.
  *
  * @param server         the MBeanServet to use of registering the objects
  * @param namingStrategy consulted during the creation of the ObjectName 
- * @param assembler      used to create MBean models for classes that are not MBeans 
+ * @param assembler      used to create MBean models for classes that are not MBeans
+ * @param ifAlredyExists what to do when a MBean with the same name is already registered
  */
-class MBeanExporter (
+final class MBeanExporter (
   val server: MBeanServer = ManagementFactory.getPlatformMBeanServer,
+  val ifAlreadyExists: IfAlreadyExists.Enum = IfAlreadyExists.Fail,
   val namingStrategy: ObjectNamingStrategy = new DefaultNamingStrategy,
   val assembler: MBeanInfoAssembler = AnnotationMBeanInfoAssembler)
     extends MBeanRegistrationSupport {
@@ -54,7 +56,7 @@ class MBeanExporter (
     }
     
     val mbean = if (refIsAnMBean) ref else modelMBean
-    registerMBean(mbean, name)
+    registerMBean(mbean, name, ifAlreadyExists)
   }
   
   /**

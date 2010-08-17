@@ -5,16 +5,17 @@ import javax.management._
 /**
  * A trait that provides a robust way for registering MBeans.
  * 
+ * <p>The main benefit of this trait is that it provides an easy way (via the
+ * {@code IfAlreadyExists} enumeration} of handling what happens when an MBean
+ * with the same name is already registered in the MBean server.</p>
+ * 
  * @see IfAlreadyExists
  */
 trait MBeanRegistrationSupport {
   
   import IfAlreadyExists._
 
-  /**
-   * The <code>MBeanServer</code> that will be used for registering/unregistering
-   * any MBeans.
-   */
+  /** The {@code MBeanServer} that will be used for registering the MBeans. */
   val server: MBeanServer
   
   /**
@@ -38,7 +39,7 @@ trait MBeanRegistrationSupport {
   /**
    * Unregister the MBean with the specified ObjectName from JMX.
    * 
-   * @param name the ObjectName of the MBean
+   * @param name the ObjectName of the MBean to unregister
    */
   def unregisterMBean(name: ObjectName) {
     server.unregisterMBean(name)
