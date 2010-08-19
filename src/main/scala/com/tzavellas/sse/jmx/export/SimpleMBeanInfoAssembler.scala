@@ -12,7 +12,7 @@ import java.lang.reflect.Method
  * 
  * <p>This implementation will generate:</p>
  * <ul>
- * <li>a operation for every method that returns Unit</li>
+ * <li>an operation for every method that returns Unit</li>
  * <li>an attribute for every var</li>
  * <li>a read-only attribute for every method that takes no arguments and returns
  * a non-Unit value</li>
