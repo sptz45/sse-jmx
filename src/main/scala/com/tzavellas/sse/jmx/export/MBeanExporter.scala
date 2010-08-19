@@ -18,10 +18,10 @@ import com.tzavellas.sse.jmx.{MBeanRegistrationSupport, IfAlreadyExists}
  * @param ifAlredyExists what to do when a MBean with the same name is already registered
  */
 final class MBeanExporter (
-  val server: MBeanServer = ManagementFactory.getPlatformMBeanServer,
-  val ifAlreadyExists: IfAlreadyExists.Enum = IfAlreadyExists.Fail,
+  val assembler: MBeanInfoAssembler = AnnotationMBeanInfoAssembler,
   val namingStrategy: ObjectNamingStrategy = new DefaultNamingStrategy,
-  val assembler: MBeanInfoAssembler = AnnotationMBeanInfoAssembler)
+  val ifAlreadyExists: IfAlreadyExists.Enum = IfAlreadyExists.Fail,
+  val server: MBeanServer = ManagementFactory.getPlatformMBeanServer)
     extends MBeanRegistrationSupport {
   
   

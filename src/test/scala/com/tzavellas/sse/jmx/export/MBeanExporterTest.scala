@@ -43,7 +43,7 @@ class MBeanExporterTest {
   @Test
   def change_the_already_exists_behavior() {
     val conf1 = new Configuration
-    val exporter = new MBeanExporter(server, IfAlreadyExists.Replace)
+    val exporter = new MBeanExporter(ifAlreadyExists=IfAlreadyExists.Replace)
     exporter.export(conf1)
     val conf2 = new Configuration
     conf2.size = 2
