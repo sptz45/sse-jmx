@@ -11,17 +11,16 @@ import java.io._
 
 class NoGetterAndSetterMBeanInfoTest {
   
-  def assembler = AnnotationMBeanInfoAssembler
-  
   @Test
   def attributes_are_removed_from_operations_after_serialization() {
-    val info = new NoGetterAndSetterMBeanInfo(assembler.createMBeanInfo(classOf[ManagedObject]))
-    assertTrue(info.getOperations.exists(_.getName == "a"))
-    val serialized = serializeAndReadBack(info)
-    assertFalse(serialized.getOperations.exists(_.getName == "a"))
-    assertFalse(serialized.getOperations.exists(_.getName == "b"))
+    val original = AnnotationMBeanInfoAssembler.createMBeanInfo(classOf[ManagedObject])
+    val wrapped = new NoGetterAndSetterMBeanInfo(original)
+    val serialized = serializeAndReadBack(wrapped)
+    
+    assertHasOperations(original, "a", "b") // asserts JDK bug 6339571 still exists
+    assertHasOperations(wrapped, "a", "b")  // asserts JDK bug 6339571 still exists
+    assertHasNoOperations(serialized, "a", "b")
   }
-  
   
   def serializeAndReadBack(ref: AnyRef) = {
     val bytes = new ByteArrayOutputStream
@@ -29,6 +28,16 @@ class NoGetterAndSetterMBeanInfoTest {
     out.writeObject(ref)
     val in = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray))
     in.readObject.asInstanceOf[ModelMBeanInfo]
+  }
+  
+  def assertHasOperations(info: ModelMBeanInfo, ops: String*) {
+    for (op <- ops)
+      assertTrue(info.getOperations.exists(_.getName == op))
+  }
+  
+  def assertHasNoOperations(info: ModelMBeanInfo, ops: String*) {
+    for (op <- ops)
+      assertFalse(info.getOperations.exists(_.getName == op))
   }
 
   class ManagedObject {
