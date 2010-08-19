@@ -11,18 +11,16 @@ import com.tzavellas.sse.jmx.IfAlreadyExists
 
 class MBeanExporterTest {
   
-  import MBeanExporterTest._
-  
   val exporter = new MBeanExporter
-  val server = exporter.server
+  val server   = exporter.server
 
   @Test
   def register_an_object_as_model_mbean() {
     val conf = new Configuration
     exporter.export(conf)
-    assertEquals(conf.reload, invokeOp[Configuration]("reload"))
-    assertEquals(conf.size,   invokeOp[Configuration]("size"))
-    assertEquals(conf.size,   server.getAttribute(objectName[Configuration], "size"))
+    assertEquals(conf.reload, invoke[Configuration]("reload"))
+    assertEquals(conf.size,   invoke[Configuration]("size"))
+    assertEquals(conf.size,   attribute[Configuration]("size"))
     server.unregisterMBean(objectName[Configuration])
   }
   
@@ -30,7 +28,7 @@ class MBeanExporterTest {
   def register_a_standard_mbean() {
     val std = new Standard
     exporter.export(std)
-    assertEquals(std.operation, invokeOp[Standard]("operation"))
+    assertEquals(std.operation, invoke[Standard]("operation"))
     server.unregisterMBean(objectName[Standard])
   }
   
@@ -38,7 +36,7 @@ class MBeanExporterTest {
   def register_a_mx_mbean() {
     val simple = new Simple
     exporter.export(simple)
-    assertEquals(simple.mxOperation, invokeOp[Simple]("mxOperation"))
+    assertEquals(simple.mxOperation, invoke[Simple]("mxOperation"))
     server.unregisterMBean(objectName[Simple])
   }
   
@@ -50,7 +48,7 @@ class MBeanExporterTest {
     val conf2 = new Configuration
     conf2.size = 2
     exporter.export(conf2)
-    assertEquals(conf2.size, invokeOp[Configuration]("size"))
+    assertEquals(conf2.size, invoke[Configuration]("size"))
     server.unregisterMBean(objectName[Configuration])
   }
   
@@ -69,19 +67,23 @@ class MBeanExporterTest {
     assertObjectName("com.tzavellas.sse.jmx.export:type=Configuration", objectName[Configuration])
   }
   
+  // -- Test helpers ----------------------------------------------------------
   
   private def assertObjectName(expected: String, actual: ObjectName) {
     assertEquals(expected, actual.toString)
   }
   
-  private def invokeOp[T](operationName: String)(implicit m: Manifest[T]) = {
+  private def invoke[T](operationName: String)(implicit m: Manifest[T]) = {
     server.invoke(objectName(m), operationName, Array(), Array())
   }
   
+  private def attribute[T](name: String)(implicit m: Manifest[T]) = {
+    server.getAttribute(objectName(m), name)
+  }
+  
   private def objectName[T](implicit m: Manifest[T]) = exporter.objectName(m.erasure)
-}
-
-object MBeanExporterTest {
+  
+  // -- Test classes ----------------------------------------------------------
   
   class Configuration {
     @Managed var size: Int = 10

@@ -8,7 +8,6 @@ import org.junit.Test
 import org.junit.Assert._
 
 class AnnotationNamingStrategyTest {
-  import AnnotationNamingStrategyTest._
   
   private def naming = AnnotationNamingStrategy
 
@@ -27,10 +26,6 @@ class AnnotationNamingStrategyTest {
   def cannot_create_name_if_annotation_has_no_value() {
     assertFalse(naming.canCreateNameFor(classOf[NoObjectNameSpecified]))
   }
-}
-
-
-object AnnotationNamingStrategyTest {
   
   @ManagedResource(objectName="com.tzavellas:type=annotated")
   class AnnotatedClass

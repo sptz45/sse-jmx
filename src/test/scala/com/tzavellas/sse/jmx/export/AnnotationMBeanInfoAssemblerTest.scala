@@ -10,10 +10,9 @@ import org.junit.Assert._
 
 class AnnotationMBeanInfoAssemblerTest {
   
-  import AnnotationMBeanInfoAssemblerTest._
-  
-  val attributes = AnnotationMBeanInfoAssembler.attributes(classOf[ManagedBean])
-  val operations = AnnotationMBeanInfoAssembler.operations(classOf[ManagedBean], attributes)
+  def assembler  = AnnotationMBeanInfoAssembler
+  val attributes = assembler.attributes(classOf[ManagedBean])
+  val operations = assembler.operations(classOf[ManagedBean], attributes)
 
   @Test
   def methods_annotated_with_managed_are_mbean_operations() {
@@ -31,29 +30,34 @@ class AnnotationMBeanInfoAssemblerTest {
   }
   
   @Test
-  def currency_time_limit_if_always_valid() {
+  def currency_time_limit_is_set_to_a_big_int_if_is_zero_aka_always_valid() {
     assertTrue(currencyTimeLimit(operation("alwaysValid")) > 10000)
-    assertEquals(null, operation("expires").getDescriptor.getFieldValue("currencyTimeLimit"))
   }
   
   @Test
-  def currency_time_limit_is_not_present_if_never_valid() {
-    assertEquals(null, operation("expires").getDescriptor.getFieldValue("currencyTimeLimit"))
+  def currency_time_limit_is_not_present_if_has_negative_value_aka_never_valid() {
+    assertNull(operation("expires").getDescriptor.getFieldValue("currencyTimeLimit"))
   }
   
   @Test
   def val_as_read_only_attribute() {
-    assertFalse(attribute("readOnlyVal").isWritable)
+    val ro = attribute("readOnlyVal")
+    assertTrue(ro.isReadable)
+    assertFalse(ro.isWritable)
   }
   
   @Test
   def var_as_read_only_attribute_via_annotation() {
-    assertFalse(attribute("readOnlyVar").isWritable)
+    val ro = attribute("readOnlyVar")
+    assertTrue(ro.isReadable)
+    assertFalse(ro.isWritable)
   }
   
   @Test
   def var_attribute_is_read_n_write() {
-    assertTrue(attribute("writable").isWritable)
+    val rw = attribute("writable")
+    assertTrue(rw.isReadable)
+    assertTrue(rw.isWritable)
   }
   
   @Test
@@ -63,8 +67,10 @@ class AnnotationMBeanInfoAssemblerTest {
   
   @Test
   def vars_in_constructors_can_be_managed() {
-    assertTrue(! AnnotationMBeanInfoAssembler.attributes(classOf[VarInConstructor]).isEmpty)
+    assertFalse(assembler.attributes(classOf[VarInConstructor]).isEmpty)
   }
+  
+  // -- Test helpers ----------------------------------------------------------
   
   def attribute(name: String) = attributes.find(_.getName == name).get
   
@@ -72,10 +78,9 @@ class AnnotationMBeanInfoAssemblerTest {
   
   def currencyTimeLimit(info: ModelMBeanOperationInfo) =
     info.getDescriptor.getFieldValue("currencyTimeLimit").asInstanceOf[Int]
-}
 
-object AnnotationMBeanInfoAssemblerTest {
-
+  // -- Test classes ----------------------------------------------------------
+  
   class ManagedBean {
 
     @Managed(description="An operation")
