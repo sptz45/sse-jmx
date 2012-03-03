@@ -1,2 +1,6 @@
 target/
 .scala_dependencies
+.project
+.classpath
+.settings
+.cache
