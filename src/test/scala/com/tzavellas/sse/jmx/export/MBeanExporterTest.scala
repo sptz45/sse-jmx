@@ -81,7 +81,7 @@ class MBeanExporterTest {
     server.getAttribute(objectName(m), name)
   }
   
-  private def objectName[T](implicit m: Manifest[T]) = exporter.objectName(m.erasure)
+  private def objectName[T](implicit m: Manifest[T]) = exporter.objectName(m.runtimeClass)
   
   // -- Test classes ----------------------------------------------------------
   

@@ -4,7 +4,7 @@
 \* ----------------------------------------------- */
 package com.tzavellas.sse.jmx
 
-import scala.annotation.target.field
+import scala.annotation.meta.field
 
 package object export {
   
