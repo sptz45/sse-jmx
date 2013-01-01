@@ -33,23 +33,24 @@ In the below example code we have a `Cache` class that is annotated with the
 `@Managed` annotation and exported using an `MBeanExporter` with the default
 configuration. 
 
-	class Cache {
-	  
-	  @Managed(readOnly=true)
-	  var size: Int
-	  
-	  @Mavaged
-	  def evict(key: String) { /* ... */ }
-	  
-	  // the cache implementation...
-	}
+```scala
+class Cache {
 
-	class MyApplication {
-	  val myCache = new Cache
-	  val exporter = new MBeanExporter
-	  exporter.export(myCache)
-	}
+  @Managed(readOnly=true)
+  var size: Int
 
+  @Mavaged
+  def evict(key: String) { /* ... */ }
+
+  // the cache implementation...
+}
+
+class MyApplication {
+  val myCache = new Cache
+  val exporter = new MBeanExporter
+  exporter.export(myCache)
+}
+```
 
 ## License
 
