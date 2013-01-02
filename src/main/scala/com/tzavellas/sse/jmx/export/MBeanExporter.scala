@@ -19,7 +19,7 @@ import com.tzavellas.sse.jmx.{MBeanRegistrationSupport, IfAlreadyExists}
  */
 final class MBeanExporter (
   val assembler: MBeanInfoAssembler = AnnotationMBeanInfoAssembler,
-  val namingStrategy: ObjectNamingStrategy = new DefaultNamingStrategy,
+  val namingStrategy: PartialFunction[Class[_], ObjectName] = JmxNaming.default,
   val ifAlreadyExists: IfAlreadyExists.Enum = IfAlreadyExists.Fail,
   val server: MBeanServer = ManagementFactory.getPlatformMBeanServer)
     extends MBeanRegistrationSupport {
@@ -73,10 +73,5 @@ final class MBeanExporter (
    * 
    * @param clazz the class to use for deriving the ObjectName
    */
-  def objectName(clazz: Class[_]): ObjectName = {
-    if (AnnotationNamingStrategy.canCreateNameFor(clazz))
-      AnnotationNamingStrategy.nameFor(clazz)
-    else
-      namingStrategy.nameFor(clazz)
-  }
+  def objectName(clazz: Class[_]): ObjectName = namingStrategy(clazz)
 }

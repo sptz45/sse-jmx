@@ -51,27 +51,8 @@ class MBeanExporterTest {
     assertEquals(conf2.size, invoke[Configuration]("size"))
     server.unregisterMBean(objectName[Configuration])
   }
-  
-  @Test
-  def should_use_the_object_name_in_annotation() {
-    assertObjectName("com.tzavellas:type=Test", objectName[ObjectNameViaAnnotation])
-  }
-  
-  @Test
-  def should_use_default_strategy_if_annotation_has_empty_value() {
-    assertObjectName("com.tzavellas.sse.jmx.export:type=EmptyAnnotation", objectName[EmptyAnnotation])
-  }
-  
-  @Test
-  def should_use_default_strategy_if_no_annotation_present() {
-    assertObjectName("com.tzavellas.sse.jmx.export:type=Configuration", objectName[Configuration])
-  }
-  
+
   // -- Test helpers ----------------------------------------------------------
-  
-  private def assertObjectName(expected: String, actual: ObjectName) {
-    assertEquals(expected, actual.toString)
-  }
   
   private def invoke[T](operationName: String)(implicit m: Manifest[T]) = {
     server.invoke(objectName(m), operationName, Array(), Array())
@@ -89,12 +70,6 @@ class MBeanExporterTest {
     @Managed var size: Int = 10
     @Managed def reload = true
   }
-
-  @ManagedResource(objectName="com.tzavellas:type=Test")
-  class ObjectNameViaAnnotation
-
-  @ManagedResource
-  class EmptyAnnotation
   
   trait StandardMBean { def operation: String }
   class Standard extends StandardMBean { def operation = "success" }
