@@ -6,7 +6,6 @@ package com.tzavellas.sse.jmx.export
 
 import java.lang.reflect.Method
 import javax.management.modelmbean._
-import annotation.{Managed => JmxManaged} /* unnecessary, but avoids Eclipse bug :-( */
 
 /**
  * Creates {@code ModelMBeanInfo} from classes that are annotated with the
@@ -24,9 +23,9 @@ object AnnotationMBeanInfoAssembler extends MBeanInfoAssembler
   
   def attributes(c: Class[_]) = {
     val attrs =
-      for (field <- c.getDeclaredFields if field.isAnnotationPresent(classOf[JmxManaged]))
+      for (field <- c.getDeclaredFields if field.isAnnotationPresent(classOf[Managed]))
       yield {
-        val managed = field.getAnnotation(classOf[JmxManaged])
+        val managed = field.getAnnotation(classOf[Managed])
         val desc = new DescriptorSupport
         val supportsWriting = hasWriter(c, field.getName) && !managed.readOnly
         val description = if (managed.description == "") field.getName else managed.description
@@ -49,7 +48,7 @@ object AnnotationMBeanInfoAssembler extends MBeanInfoAssembler
     
   
   def operations(c: Class[_], attrs: Array[ModelMBeanAttributeInfo]) = {
-    def isOperation(m: Method) = m.isAnnotationPresent(classOf[JmxManaged])
+    def isOperation(m: Method) = m.isAnnotationPresent(classOf[Managed])
     def isAttributeMethod(m: Method) = attrs.exists { attr =>
       attr.getDescriptor.getFieldValue("getMethod") == m.getName ||
       attr.getDescriptor.getFieldValue("setMethod") == m.getName
@@ -60,7 +59,7 @@ object AnnotationMBeanInfoAssembler extends MBeanInfoAssembler
   }
   
   private def createOperationInfo(method: Method): ModelMBeanOperationInfo = {
-    val managed = method.getAnnotation(classOf[JmxManaged])
+    val managed = method.getAnnotation(classOf[Managed])
     def description = if (managed == null) method.getName else managed.description
     val desc = new DescriptorSupport 
     desc.setField("name", method.getName)
@@ -71,7 +70,7 @@ object AnnotationMBeanInfoAssembler extends MBeanInfoAssembler
     new ModelMBeanOperationInfo(description, method, desc)
   }
   
-  private def translateTimeLimit(m: JmxManaged) = {
+  private def translateTimeLimit(m: Managed) = {
     if (m eq null) None
     else CurrencyTimeLimitTranslator.translate(m.currencyTimeLimit)
   }
