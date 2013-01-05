@@ -9,25 +9,25 @@ import javax.management._
 /**
  * A trait that provides a robust way for registering MBeans.
  * 
- * <p>The main benefit of this trait is that it provides an easy way (via the
- * {@code IfAlreadyExists} enumeration} of handling what happens when an MBean
- * with the same name is already registered in the MBean server.</p>
+ * The main benefit of this trait is that it provides an easy way of handling
+ * what happens when an MBean with the same name is already registered in the
+ * MBean server.
  * 
- * @see IfAlreadyExists
+ * @see [[IfAlreadyExists]]
  */
 trait MBeanRegistrationSupport {
   
   import IfAlreadyExists._
 
-  /** The {@code MBeanServer} that will be used for registering the MBeans. */
+  /** The `MBeanServer` that will be used for registering the MBeans. */
   val server: MBeanServer
   
   /**
-   * Register the specified MBeans
+   * Register the specified MBean.
    * 
    * @param mbean    the MBean to register
-   * @param name     the ObjectName that will be used for registering the MBean
-   * @param behavior what to do if an MBean with the same ObjectName is already registered 
+   * @param name     the `ObjectName` that will be used for registering the MBean
+   * @param behavior what to do if an MBean with the same `ObjectName` is already registered 
    */
   def registerMBean(mbean: AnyRef, name: ObjectName, behavior: IfAlreadyExists.Enum = Fail) {
     if (server.isRegistered(name)) behavior match {
@@ -41,9 +41,9 @@ trait MBeanRegistrationSupport {
   }
 
   /**
-   * Unregister the MBean with the specified ObjectName from JMX.
+   * Unregister the MBean with the specified `ObjectName` from JMX.
    * 
-   * @param name the ObjectName of the MBean to unregister
+   * @param name the `ObjectName` of the MBean to unregister
    */
   def unregisterMBean(name: ObjectName) {
     server.unregisterMBean(name)
@@ -64,6 +64,6 @@ object IfAlreadyExists extends Enumeration {
   /** Ignore the request to register this MBean leaving the existing MBean registered. */
   val Ignore  = Value
   
-  /** Fail by throwing an {@code InstanceAlreadyExistsException} */
+  /** Fail by throwing an `InstanceAlreadyExistsException` */
   val Fail = Value
 }
