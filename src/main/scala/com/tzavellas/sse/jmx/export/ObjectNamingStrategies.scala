@@ -9,7 +9,7 @@ import javax.management.ObjectName
 /**
  * Contains functions for creating an `ObjectName`s from classes.
  */
-object JmxNaming {
+object ObjectNamingStrategies {
 
   /**
    * Use the full class name to produce an `ObjectName`.
@@ -41,14 +41,14 @@ object JmxNaming {
    * the `ManagedResource` annotation. 
    */
   val useAnnotation: PartialFunction[Class[_], ObjectName] = {
-    case c if isNamePresent(c) => nameFor(c)
+    case c if isAnnotationPresent(c) => getObjectNameFromAnnotation(c)
   }
 
-  private def isNamePresent(c: Class[_]) = {
+  private def isAnnotationPresent(c: Class[_]) = {
     Option(c.getAnnotation(classOf[ManagedResource])).exists(_.objectName != "")
   }
 
-  private def nameFor(c: Class[_]) = {
+  private def getObjectNameFromAnnotation(c: Class[_]) = {
     new ObjectName(c.getAnnotation(classOf[ManagedResource]).objectName)
   }
 

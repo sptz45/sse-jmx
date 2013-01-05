@@ -19,7 +19,7 @@ import com.tzavellas.sse.jmx.{MBeanRegistrationSupport, IfAlreadyExists}
  */
 final class MBeanExporter (
   private val assembler: MBeanInfoAssembler = AnnotationMBeanInfoAssembler,
-  private[export] val namingStrategy: PartialFunction[Class[_], ObjectName] = JmxNaming.default,
+  private[export] val namingStrategy: PartialFunction[Class[_], ObjectName] = ObjectNamingStrategies.default,
   private val ifAlreadyExists: IfAlreadyExists.Enum = IfAlreadyExists.Fail,
   val server: MBeanServer = ManagementFactory.getPlatformMBeanServer)
     extends MBeanRegistrationSupport {

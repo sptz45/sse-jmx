@@ -8,9 +8,9 @@ import org.junit.Test
 import org.junit.Assert._
 import javax.management.{ObjectName, MalformedObjectNameException}
 
-class JmxNamingTest {
+class ObjectNamingStrategiesTest {
 
-  import JmxNaming._
+  import ObjectNamingStrategies._
   
   @Test
   def the_name_has_the_package_as_domain_and_the_class_name_as_type_property() {
