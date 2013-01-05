@@ -48,10 +48,6 @@ final class MBeanExporter (
    * @param name the ObjectName to use for registering the object
    */
   def export(ref: AnyRef, name: ObjectName) {
-    
-    def refIsAnMBean =
-      JmxUtils.isStandardMBean(ref.getClass) || JmxUtils.isMXBean(ref.getClass)
-    
     def modelMBean = {
       val info = new NoGetterAndSetterMBeanInfo(assembler.createMBeanInfo(ref.getClass))
       val model = new RequiredModelMBean(info)
@@ -59,7 +55,7 @@ final class MBeanExporter (
       model
     }
     
-    val mbean = if (refIsAnMBean) ref else modelMBean
+    val mbean = if (JmxUtils.isMBean(ref.getClass)) ref else modelMBean
     registerMBean(mbean, name, ifAlreadyExists)
   }
   
