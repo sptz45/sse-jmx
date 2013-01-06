@@ -7,6 +7,9 @@ package com.tzavellas.sse.jmx
 import scala.annotation.meta.field
 import javax.management.ObjectName
 
+/**
+ * Provides classes that make it easy to export Scala objects to JMX.
+ */
 package object export {
 
   /** The Managed annotation, annotated with {@literal @field}. */
