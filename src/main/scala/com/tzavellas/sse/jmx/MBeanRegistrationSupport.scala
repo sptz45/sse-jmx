@@ -41,7 +41,7 @@ trait MBeanRegistrationSupport {
   }
 
   /**
-   * Unregister the MBean with the specified `ObjectName` from JMX.
+   * Unregister the MBean with the specified `ObjectName`.
    * 
    * @param name the `ObjectName` of the MBean to unregister
    */

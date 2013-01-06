@@ -9,11 +9,11 @@ import org.junit.Assert._
 import java.lang.management.ManagementFactory
 import javax.management._
 
-class MBeanRegistrationSupportTest {
+class MBeanRegistrationSupportTest extends AbstractMBeanRegistrationTest {
   
-  import MBeanRegistrationSupportTest._
-  
-  private val mbean = new Simple
+  object registrar extends MBeanRegistrationSupport {
+    val server = ManagementFactory.getPlatformMBeanServer
+  }
   
   @After
   def unregisterMBean() {
@@ -24,7 +24,7 @@ class MBeanRegistrationSupportTest {
   @Test
   def registration_of_a_standard_mbean() {
     registrar.registerMBean(mbean, objectName)
-    assertIsRegistered(mbean)
+    assertRegistered(mbean)
   }
   
   @Test(expected=classOf[InstanceAlreadyExistsException])
@@ -34,7 +34,7 @@ class MBeanRegistrationSupportTest {
     registrar.registerMBean(mbean1, objectName)
 
     assertNotRegistered(mbean1)
-    assertIsRegistered(mbean)
+    assertRegistered(mbean)
   }
   
   @Test
@@ -44,7 +44,7 @@ class MBeanRegistrationSupportTest {
     registrar.registerMBean(mbean1, objectName, IfAlreadyExists.Ignore)
 
     assertNotRegistered(mbean1)
-    assertIsRegistered(mbean)
+    assertRegistered(mbean)
   }
   
   @Test
@@ -53,35 +53,7 @@ class MBeanRegistrationSupportTest {
     val mbean1 = new Simple(1)
     registrar.registerMBean(mbean1, objectName, IfAlreadyExists.Replace)
     
-    assertIsRegistered(mbean1)
+    assertRegistered(mbean1)
     assertNotRegistered(mbean)
-  }
-}
-
-object MBeanRegistrationSupportTest {
-  
-  object registrar extends MBeanRegistrationSupport {
-    val server = ManagementFactory.getPlatformMBeanServer
-  }
-  
-  val objectName = new ObjectName("com.tzavellas.sse.jmx.test:type=SimpleMBean")
-
-  trait SimpleMBean { def operation: Int }
-  
-  class Simple(val id: Int = 0) extends SimpleMBean {
-    def operation = id
-  }
-  
-  def assertIsRegistered(mbean: Simple) {
-    assertEquals(mbean.operation, registrar.server.invoke(objectName, "operation", Array(), Array()))
-  }
-  
-  def assertNotRegistered(mbean: Simple) {
-    try {
-      val result = registrar.server.invoke(objectName, "operation", Array(), Array()).asInstanceOf[Int]
-      assertTrue(mbean.operation != result)
-    } catch {
-      case e: InstanceNotFoundException => ()
-    }
   }
 }
