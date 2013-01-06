@@ -19,7 +19,7 @@ object ObjectNamingStrategies {
    * name of the specified class.
    */
   val useFullClassName: ObjectNamingStrategy = {
-    case c => new ObjectName(s"${c.getPackage.getName}:type=${c.getSimpleName}")
+    case c => new ObjectName(s"${c.getPackage.getName}:type=${simpleNameOf(c)}")
   }
   
   /**
@@ -30,7 +30,7 @@ object ObjectNamingStrategies {
    * is the simple name of the specified class.
    */
   def useSimpleClassName(domain: String): ObjectNamingStrategy = {
-    case c => new ObjectName(s"${domain}:type=${c.getSimpleName}")
+    case c => new ObjectName(s"${domain}:type=${simpleNameOf(c)}")
   } 
 
   /**
@@ -50,6 +50,14 @@ object ObjectNamingStrategies {
 
   private def getObjectNameFromAnnotation(c: Class[_]) = {
     new ObjectName(c.getAnnotation(classOf[ManagedResource]).objectName)
+  }
+  
+  private def simpleNameOf(c: Class[_]): String = {
+    if (c.isInterface) {
+      if (c.getSimpleName.endsWith("MBean")) return c.getSimpleName.dropRight(5)
+      if (c.getSimpleName.endsWith("MXBean")) return c.getSimpleName.dropRight(6)
+    }
+    c.getSimpleName
   }
 
   /**

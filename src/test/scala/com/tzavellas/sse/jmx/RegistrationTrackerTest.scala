@@ -10,6 +10,8 @@ class RegistrationTrackerTest extends AbstractMBeanRegistrationTest {
     val server = ManagementFactory.getPlatformMBeanServer
   }
 
+  def server = registrar.server
+
   @Test
   def unregisterAll_remove_all_registered_mbeans_from_server() {
     registrar.registerMBean(mbean, objectName)

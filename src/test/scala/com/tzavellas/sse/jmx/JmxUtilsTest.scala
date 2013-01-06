@@ -2,7 +2,7 @@
  * Licensed under the Apache License, Version 2.0. *
  * Author: Spiros Tzavellas                        *
 \* ----------------------------------------------- */
-package com.tzavellas.sse.jmx.export
+package com.tzavellas.sse.jmx
 
 import org.junit.Test
 import org.junit.Assert._

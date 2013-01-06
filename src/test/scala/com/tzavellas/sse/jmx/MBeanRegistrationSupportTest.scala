@@ -14,6 +14,8 @@ class MBeanRegistrationSupportTest extends AbstractMBeanRegistrationTest {
   object registrar extends MBeanRegistrationSupport {
     val server = ManagementFactory.getPlatformMBeanServer
   }
+
+  def server = registrar.server
   
   @After
   def unregisterMBean() {

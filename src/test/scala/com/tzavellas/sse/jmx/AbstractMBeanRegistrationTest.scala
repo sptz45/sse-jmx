@@ -7,10 +7,11 @@ package com.tzavellas.sse.jmx
 import javax.management.InstanceNotFoundException
 import javax.management.ObjectName
 import org.junit.Assert._
+import javax.management.MBeanServer
 
 abstract class AbstractMBeanRegistrationTest {
   
-  def registrar: MBeanRegistrationSupport
+  def server: MBeanServer
   
   val mbean = new Simple
   val objectName = new ObjectName("com.tzavellas.sse.jmx.test:type=SimpleMBean")
@@ -22,12 +23,12 @@ abstract class AbstractMBeanRegistrationTest {
   }
   
   def assertRegistered(mbean: Simple) {
-    assertEquals(mbean.operation, registrar.server.invoke(objectName, "operation", Array(), Array()))
+    assertEquals(mbean.operation, server.invoke(objectName, "operation", Array(), Array()))
   }
   
   def assertNotRegistered(mbean: Simple) {
     try {
-      val result = registrar.server.invoke(objectName, "operation", Array(), Array()).asInstanceOf[Int]
+      val result = server.invoke(objectName, "operation", Array(), Array()).asInstanceOf[Int]
       assertTrue(mbean.operation != result)
     } catch {
       case e: InstanceNotFoundException =>

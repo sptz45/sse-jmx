@@ -8,6 +8,7 @@ import java.lang.management.ManagementFactory
 import javax.management.{ObjectName, MBeanServer}
 import javax.management.modelmbean.RequiredModelMBean
 import com.tzavellas.sse.jmx.{MBeanRegistrationSupport, IfAlreadyExists}
+import com.tzavellas.sse.jmx.JmxUtils
 
 /**
  * Exports objects to JMX.
