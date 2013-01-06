@@ -20,7 +20,7 @@ trait MBeanRegistrationSupport {
   import IfAlreadyExists._
 
   /** The `MBeanServer` that will be used for registering the MBeans. */
-  val server: MBeanServer
+  def server: MBeanServer
   
   /**
    * Register the specified MBean.
