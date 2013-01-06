@@ -6,7 +6,7 @@ package com.tzavellas.sse.jmx.export
 
 import org.junit.Test
 import org.junit.Assert._
-import javax.management.{ObjectName, MalformedObjectNameException}
+import javax.management.ObjectName
 
 class ObjectNamingStrategiesTest {
 
