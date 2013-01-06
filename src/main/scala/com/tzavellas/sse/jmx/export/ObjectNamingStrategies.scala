@@ -18,7 +18,7 @@ object ObjectNamingStrategies {
    * <i>domain-value</i> is the package name and <i>type-value</i> is the simple
    * name of the specified class.
    */
-  val useFullClassName: PartialFunction[Class[_], ObjectName] = {
+  val useFullClassName: ObjectNamingStrategy = {
     case c => new ObjectName(s"${c.getPackage.getName}:type=${c.getSimpleName}")
   }
   
@@ -29,7 +29,7 @@ object ObjectNamingStrategies {
    * <i>domain-value</i> is the specified `domain` argument and <i>type-value</i>
    * is the simple name of the specified class.
    */
-  def useSimpleClassName(domain: String): PartialFunction[Class[_], ObjectName] = {
+  def useSimpleClassName(domain: String): ObjectNamingStrategy = {
     case c => new ObjectName(s"${domain}:type=${c.getSimpleName}")
   } 
 
@@ -40,7 +40,7 @@ object ObjectNamingStrategies {
    * This partial function is only applicable to classes that are annotated with
    * the `ManagedResource` annotation. 
    */
-  val useAnnotation: PartialFunction[Class[_], ObjectName] = {
+  val useAnnotation: ObjectNamingStrategy = {
     case c if isAnnotationPresent(c) => getObjectNameFromAnnotation(c)
   }
 
