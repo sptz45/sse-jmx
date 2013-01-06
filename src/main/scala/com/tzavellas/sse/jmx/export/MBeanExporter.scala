@@ -7,7 +7,7 @@ package com.tzavellas.sse.jmx.export
 import java.lang.management.ManagementFactory
 import javax.management.{ObjectName, MBeanServer}
 import javax.management.modelmbean.RequiredModelMBean
-import com.tzavellas.sse.jmx.{MBeanRegistrationSupport, IfAlreadyExists} 
+import com.tzavellas.sse.jmx.{MBeanRegistrationSupport, IfAlreadyExists}
 
 /**
  * Exports objects to JMX.
@@ -19,7 +19,7 @@ import com.tzavellas.sse.jmx.{MBeanRegistrationSupport, IfAlreadyExists}
  */
 final class MBeanExporter (
   private val assembler: MBeanInfoAssembler = AnnotationMBeanInfoAssembler,
-  private[export] val namingStrategy: PartialFunction[Class[_], ObjectName] = ObjectNamingStrategies.default,
+  private[export] val namingStrategy: ObjectNamingStrategy = ObjectNamingStrategies.default,
   private val ifAlreadyExists: IfAlreadyExists.Enum = IfAlreadyExists.Fail,
   val server: MBeanServer = ManagementFactory.getPlatformMBeanServer)
     extends MBeanRegistrationSupport {
