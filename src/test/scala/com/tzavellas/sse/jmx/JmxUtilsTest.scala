@@ -13,8 +13,6 @@ class JmxUtilsTest {
   def should_detect_an_mbean() {
     assertTrue(JmxUtils.isStandardMBean(classOf[Helper]))
     assertFalse(JmxUtils.isStandardMBean(classOf[String]))
-    
-    assertTrue(JmxUtils.isStandardMBeanInterface(classOf[HelperMBean]))
   }
   
   @Test
