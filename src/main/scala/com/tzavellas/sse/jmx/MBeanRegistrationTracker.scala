@@ -21,7 +21,7 @@ trait MBeanRegistrationTracker extends MBeanRegistrationSupport {
     registered += name
   }
 
-  abstract override def unregisterMBean(name: ObjectName) {
+  abstract override def unregisterMBean(name: ObjectName, ignore: Boolean = false) {
     super.unregisterMBean(name)
     registered -= name
   }

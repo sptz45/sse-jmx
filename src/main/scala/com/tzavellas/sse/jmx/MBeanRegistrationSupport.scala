@@ -43,10 +43,13 @@ trait MBeanRegistrationSupport {
   /**
    * Unregister the MBean with the specified `ObjectName`.
    * 
-   * @param name the `ObjectName` of the MBean to unregister
+   * @param name   the `ObjectName` of the MBean to unregister
+   * @param ignore do not throw exception if an MBean with the specified
+   *               `ObjectName` is not found.
    */
-  def unregisterMBean(name: ObjectName) {
-    server.unregisterMBean(name)
+  def unregisterMBean(name: ObjectName, ignore: Boolean = false) {
+    try { server.unregisterMBean(name) }
+    catch { case e: InstanceNotFoundException if ignore =>  }
   }
 }
 

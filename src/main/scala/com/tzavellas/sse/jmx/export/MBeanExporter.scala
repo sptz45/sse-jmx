@@ -44,9 +44,10 @@ final class MBeanExporter (
    * The configured `ObjectNamingStrategy` is consulted in order to find the
    * `ObjectName` of the specified object.
    *
-   * @param ref the object to remove from JMX.
+   * @param ref    the object to remove from JMX.
+   * @param ignore do not throw exception `ref` is not registered.
    */
-  def remove(ref: AnyRef) {
+  def remove(ref: AnyRef, ignore: Boolean = false) {
     unregisterMBean(namingStrategy(ref.getClass))
   }
 

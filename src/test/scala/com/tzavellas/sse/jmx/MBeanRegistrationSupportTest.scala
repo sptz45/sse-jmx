@@ -19,7 +19,7 @@ class MBeanRegistrationSupportTest extends AbstractMBeanRegistrationTest {
   
   @After
   def unregisterMBean() {
-    registrar.unregisterMBean(objectName)
+    try { server.unregisterMBean(objectName) } catch { case e: InstanceNotFoundException => }
     assertNotRegistered(mbean)
   }
 
@@ -57,5 +57,23 @@ class MBeanRegistrationSupportTest extends AbstractMBeanRegistrationTest {
     
     assertRegistered(mbean1)
     assertNotRegistered(mbean)
+  }
+
+  @Test
+  def unregister_mbean() {
+    registrar.registerMBean(mbean, objectName)
+    assertRegistered(mbean)
+    registrar.unregisterMBean(objectName)
+    assertNotRegistered(mbean)
+  }
+
+  @Test(expected=classOf[InstanceNotFoundException])
+  def exception_if_not_registered() {
+    registrar.unregisterMBean(objectName)
+  }
+
+  @Test
+  def ignore_exception_if_not_registered() {
+    registrar.unregisterMBean(objectName, ignore=true)
   }
 }
