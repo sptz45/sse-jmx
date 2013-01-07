@@ -8,6 +8,7 @@ import javax.management.ObjectName
 import org.junit.{Test, After}
 import org.junit.Assert._
 import com.tzavellas.sse.jmx.IfAlreadyExists
+import javax.management.InstanceNotFoundException
 
 class MBeanExporterTest {
   
@@ -50,6 +51,20 @@ class MBeanExporterTest {
     exporter.export(conf2)
     assertEquals(conf2.size, invoke[Configuration]("size"))
     server.unregisterMBean(objectName[Configuration])
+  }
+
+  @Test
+  def remove_object_from_jmx() {
+    val conf = new Configuration
+
+    try { exporter.remove(conf); fail("Should throw an InstanceNotFoundException") }
+    catch { case e: InstanceNotFoundException => }
+
+    exporter.export(conf)
+    assertTrue(server.isRegistered(objectName[Configuration]))
+
+    exporter.remove(conf)
+    assertFalse(server.isRegistered(objectName[Configuration]))
   }
 
   // -- Test helpers ----------------------------------------------------------
