@@ -59,6 +59,7 @@ object SimpleMBeanInfoAssembler extends MBeanInfoAssembler with MBeanModelExtrac
   
   def operations(c: Class[_], attrs: Array[ModelMBeanAttributeInfo]) = {
     c.getMethods
+     .filterNot(m => m.isSynthetic || m.isBridge)
      .filterNot(m => excludedOperations.contains(m.getName))
      .filter(m => isOperation(m) || isAttributeMethod(m, attrs))
      .map(m => new ModelMBeanOperationInfo(m.getName, m))
