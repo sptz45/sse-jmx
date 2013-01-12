@@ -20,22 +20,22 @@ class MBeanProxyFactoyTest {
 
   val exporter = new export.MBeanExporter
   val objectName = new ObjectName("com.tzavellas.sse.jmx.test:type=Example")
-  
+
   @After
   def unregisterMBean() {
     exporter.unregisterMBean(objectName, ignore=true)
   }
-  
+
   @Test(expected=classOf[IllegalArgumentException])
   def cannot_request_proxy_without_interface() {
     factory.proxyOf[String]()
   }
-  
+
   @Test(expected=classOf[IllegalArgumentException])
   def cannot_request_proxy_with_interface_not_mbean() {
     factory.proxyOf[Runnable]()
   }
-  
+
   @Test
   def request_an_mbean_proxy() {
     val mbean = new Example1
@@ -43,7 +43,15 @@ class MBeanProxyFactoyTest {
     val proxy = factory.proxyOf[Example1MBean](objectName)
     assertEquals(mbean.operation, proxy.operation)
   }
-  
+
+  @Test
+  def request_an_mbean_proxy_without_specifying_objectName() {
+    val mbean = new Example1
+    exporter.export(mbean)
+    val proxy = factory.proxyOf[Example1MBean]()
+    assertEquals(mbean.operation, proxy.operation)
+  }
+
   @Test
   def request_an_mxbean_proxy() {
     val mbean = new Example2
@@ -56,7 +64,7 @@ class MBeanProxyFactoyTest {
   def test_dynamic_access_to_mbean() {
     val mbean = new AnnotatedObject
     exporter.export(mbean, objectName)
-    
+
     val proxy = factory.dynamicProxyOf(objectName)
     assertEquals(mbean.attr, proxy.attr)
     assertEquals(mbean.attr, proxy.operation())
@@ -67,15 +75,15 @@ class MBeanProxyFactoyTest {
 
 
   // -- test classes ----------------------------------------------------------
-  
+
   class AnnotatedObject {
     @Managed var attr = 10
     @Managed def operation = attr
   }
-  
+
   trait Example1MBean { def operation: Int }
   class Example1 extends Example1MBean { def operation = 1 }
-  
+
   trait Example2MXBean { def operation: Int }
   class Example2 extends Example2MXBean { def operation = 2 }
 }
