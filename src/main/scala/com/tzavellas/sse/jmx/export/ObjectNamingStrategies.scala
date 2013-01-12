@@ -14,9 +14,14 @@ object ObjectNamingStrategies {
   /**
    * Use the full class name to produce an `ObjectName`.
    *
-   * The produced `ObjectName` is: <i>domain-value:type=type-value</i>, where
-   * <i>domain-value</i> is the package name and <i>type-value</i> is the simple
+   * The produced `ObjectName` is: ''domain-value:type=type-value'', where
+   * ''domain-value'' is the package name and ''type-value'' is the simple
    * name of the specified class.
+   *
+   * If the specified `Class` object is an interface and ends in ''MBean'' or
+   * ''MXBean'' then those suffixes are removed from the simple class name.
+   *
+   * This `PartialFunction` is applicable to all `Class` objects.
    */
   val useFullClassName: ObjectNamingStrategy = {
     case c => new ObjectName(s"${c.getPackage.getName}:type=${simpleNameOf(c)}")
@@ -25,9 +30,14 @@ object ObjectNamingStrategies {
   /**
    * Use the simple class name to produce an `ObjectName`.
    *
-   * The produced `ObjectName` is: <i>domain-value:type=type-value</i>, where
-   * <i>domain-value</i> is the specified `domain` argument and <i>type-value</i>
+   * The produced `ObjectName` is: ''domain-value:type=type-value'', where
+   * ''domain-value'' is the specified `domain` argument and ''type-value''
    * is the simple name of the specified class.
+   *
+   * If the specified `Class` object is an interface and ends in ''MBean'' or
+   * ''MXBean'' then those suffixes are removed from the simple class name.
+   *
+   * This `PartialFunction` is applicable to all `Class` objects.
    */
   def useSimpleClassName(domain: String): ObjectNamingStrategy = {
     case c => new ObjectName(s"${domain}:type=${simpleNameOf(c)}")
@@ -36,13 +46,25 @@ object ObjectNamingStrategies {
   /**
    * Produce an object name from the `objectName` property of the `ManagedResource`
    * annotation.
-   * 
+   *
    * This partial function is only applicable to classes that are annotated with
-   * the `ManagedResource` annotation. 
+   * the [[ManagedResource]] annotation.
    */
   val useAnnotation: ObjectNamingStrategy = {
     case c if isAnnotationPresent(c) => getObjectNameFromAnnotation(c)
   }
+
+  /**
+   * Create an `ObjectName` from the `ManagedResource` annotation or from the
+   * full class name.
+   *
+   * This partial function essentially combines the [[useAnnotation]] and
+   * [[useFullClassName]] partial functions.
+   */
+  val default = useAnnotation orElse useFullClassName
+
+
+  // -- private helper methods ------------------------------------------------
 
   private def isAnnotationPresent(c: Class[_]) = {
     Option(c.getAnnotation(classOf[ManagedResource])).exists(_.objectName != "")
@@ -51,7 +73,7 @@ object ObjectNamingStrategies {
   private def getObjectNameFromAnnotation(c: Class[_]) = {
     new ObjectName(c.getAnnotation(classOf[ManagedResource]).objectName)
   }
-  
+
   private def simpleNameOf(c: Class[_]): String = {
     if (c.isInterface) {
       if (c.getSimpleName.endsWith("MBean")) return c.getSimpleName.dropRight(5)
@@ -59,13 +81,4 @@ object ObjectNamingStrategies {
     }
     c.getSimpleName
   }
-
-  /**
-   * Create an `ObjectName` from the `ManagedResource` annotation or from the
-   * full class name.
-   * 
-   * This partial function essentially combines the [[useAnnotation]] and
-   * [[useFullClassName]] partial functions.
-   */
-  val default = useAnnotation orElse useFullClassName
 }
