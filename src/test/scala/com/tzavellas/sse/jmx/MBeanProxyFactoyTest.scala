@@ -23,8 +23,7 @@ class MBeanProxyFactoyTest {
   
   @After
   def unregisterMBean() {
-    try { exporter.unregisterMBean(objectName) }
-    catch { case e: InstanceNotFoundException => }
+    exporter.unregisterMBean(objectName, ignore=true)
   }
   
   @Test(expected=classOf[IllegalArgumentException])
