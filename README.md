@@ -1,7 +1,7 @@
 
 # sse-jmx
 
-[![Build Status](https://secure.travis-ci.org/sptz45/sse-guice.png)](http://travis-ci.org/sptz45/sse-guice)
+[![Build Status](https://secure.travis-ci.org/sptz45/sse-jmx.png)](http://travis-ci.org/sptz45/sse-jmx)
 
 The aim of this library is to make working with *JMX* in *Scala* simpler.
 
