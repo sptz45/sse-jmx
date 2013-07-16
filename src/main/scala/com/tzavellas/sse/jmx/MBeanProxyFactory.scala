@@ -66,14 +66,7 @@ trait MBeanProxyFactory {
 class DynamicMBeanProxy(server: MBeanServerConnection, name: ObjectName) extends Dynamic {
 
   /** Return the value of the specified attribute. */
-  def selectDynamic(attribute: String) = server.getAttribute(name, attribute)
-
-  //TODO introduce type parameter in selectDynamic.
-  // The following implementation has problems with primitive types:
-  //  def selectDynamic[A](attribute: String) = server.getAttribute(name, attribute).asInstanceOf[A]
-  // When calling proxy.attr[Int] on an Int attribute we get:
-  //  java.lang.ClassCastException: java.lang.Integer cannot be cast to java.lang.Long
-  // Version 2.10.1 will have may scala.Dynamic bugfixes and we need to test this after upgrading.
+  def selectDynamic[A](attribute: String) = server.getAttribute(name, attribute).asInstanceOf[A]
 
   /** Update the value of the specified attribute. */
   def updateDynamic(attribute: String)(value: Any) {
@@ -88,5 +81,5 @@ class DynamicMBeanProxy(server: MBeanServerConnection, name: ObjectName) extends
   }
 
   //TODO maybe implement applyDynamicNamed
-  //def applyDynamicNamed(name: String)(args: (String, Any)*) {
+  //def applyDynamicNamed(name: String)(args: (String, Any)*)
 }

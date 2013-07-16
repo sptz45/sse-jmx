@@ -64,13 +64,12 @@ class MBeanProxyFactoyTest {
   def test_dynamic_access_to_mbean() {
     val mbean = new AnnotatedObject
     exporter.export(mbean, objectName)
-
     val proxy = factory.dynamicProxyOf(objectName)
-    assertEquals(mbean.attr, proxy.attr)
+
+    assertEquals(mbean.attr, proxy.attr[Int])
     assertEquals(mbean.attr, proxy.operation())
-    //XXX Does not work because of a compiler bug that will get fixed in 2.10.1
-    //proxy.attr = 1
-    //assertEquals(1, mbean.attr)
+    proxy.attr = 1
+    assertEquals(1, mbean.attr)
   }
 
 
