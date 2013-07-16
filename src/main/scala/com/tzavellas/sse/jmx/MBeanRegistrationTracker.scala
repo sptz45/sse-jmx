@@ -32,7 +32,7 @@ trait MBeanRegistrationTracker extends MBeanRegistrationSupport {
    * @see [[registerMBean]]
    */
   def unregisterAll() {
-    for (name <- registered) yield {
+    for (name <- registered) {
       try { unregisterMBean(name) }
       catch { case e: InstanceNotFoundException => }
     }
