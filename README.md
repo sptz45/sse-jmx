@@ -1,4 +1,3 @@
-
 # sse-jmx
 
 [![Build Status](https://secure.travis-ci.org/sptz45/sse-jmx.png)](http://travis-ci.org/sptz45/sse-jmx)
@@ -53,6 +52,17 @@ class MyApplication {
   exporter.export(myCache)
 }
 ```
+
+## Maven
+
+```xml
+<dependency>
+  <groupId>com.tzavellas</groupId>
+  <artifactId>sse-jmx</artifactId>
+  <version>0.4</version>
+</dependency>
+```
+
 
 ## License
 
