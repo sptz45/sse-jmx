@@ -20,6 +20,7 @@ class NoGetterAndSetterMBeanInfoTest {
     assertHasOperations(original, "a", "b") // asserts JDK bug 6339571 still exists
     assertHasOperations(wrapped, "a", "b")  // asserts JDK bug 6339571 still exists
     assertHasNoOperations(serialized, "a", "b")
+    assertHasOperations(serialized, "c")
   }
   
   def serializeAndReadBack(ref: AnyRef) = {
@@ -43,5 +44,6 @@ class NoGetterAndSetterMBeanInfoTest {
   class ManagedObject {
     @Managed var a: Int = 0
     @Managed val b: Int = 0
+    @Managed def c: Int = 0
   }
 }

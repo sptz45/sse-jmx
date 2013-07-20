@@ -53,18 +53,23 @@ object AnnotationMBeanInfoAssembler extends MBeanInfoAssembler
       attr.getDescriptor.getFieldValue("getMethod") == m.getName ||
       attr.getDescriptor.getFieldValue("setMethod") == m.getName
     }
+    def roleOf(m: Method): String = {
+      if (attrs.exists(_.getDescriptor.getFieldValue("getMethod") == m.getName)) return "getter"
+      if (attrs.exists(_.getDescriptor.getFieldValue("setMethod") == m.getName)) return "setter"
+      "operation"
+    }
     c.getMethods.collect {
-      case m if isOperation(m) || isAttributeMethod(m) => createOperationInfo(m) 
+      case m if isOperation(m) || isAttributeMethod(m) => createOperationInfo(m, roleOf(m))
     }
   }
   
-  private def createOperationInfo(method: Method): ModelMBeanOperationInfo = {
+  private def createOperationInfo(method: Method, role: String): ModelMBeanOperationInfo = {
     val managed = method.getAnnotation(classOf[Managed])
-    def description = if (managed == null) method.getName else managed.description
+    def description = if (managed == null || managed.description.isEmpty) method.getName else managed.description
     val desc = new DescriptorSupport 
     desc.setField("name", method.getName)
     desc.setField("descriptorType", "operation")
-    desc.setField("role", "operation")
+    desc.setField("role", role)
     for (timeLimit <- translateTimeLimit(managed))
       desc.setField("currencyTimeLimit", timeLimit)
     new ModelMBeanOperationInfo(description, method, desc)

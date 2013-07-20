@@ -20,7 +20,7 @@ private class NoGetterAndSetterMBeanInfo(info: ModelMBeanInfo) extends ModelMBea
   
   private def writeReplace(): AnyRef = {
     
-    def isGetterOrSetter(role: String) = ! "getter".equalsIgnoreCase(role) && ! "setter".equalsIgnoreCase(role)
+    def isGetterOrSetter(role: String) = "getter".equalsIgnoreCase(role) || "setter".equalsIgnoreCase(role)
     
     def role(info: MBeanOperationInfo) = info.getDescriptor.getFieldValue("role").asInstanceOf[String]
 
