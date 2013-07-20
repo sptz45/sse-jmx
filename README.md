@@ -59,7 +59,7 @@ class MyApplication {
 <dependency>
   <groupId>com.tzavellas</groupId>
   <artifactId>sse-jmx</artifactId>
-  <version>0.4</version>
+  <version>0.4.1</version>
 </dependency>
 ```
 
