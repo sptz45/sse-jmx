@@ -9,7 +9,7 @@
 
 	<groupId>com.tzavellas</groupId>
 	<artifactId>sse-jmx</artifactId>
-	<version>0.5-SNAPSHOT</version>
+	<version>0.4.1-SNAPSHOT</version>
 	<inceptionYear>2009</inceptionYear>
 	<name>sse-jmx</name>
 	<description>JMX Library for Scala</description>
