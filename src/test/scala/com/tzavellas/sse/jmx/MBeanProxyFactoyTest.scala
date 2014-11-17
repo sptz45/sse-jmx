@@ -47,9 +47,14 @@ class MBeanProxyFactoyTest {
   @Test
   def request_an_mbean_proxy_without_specifying_objectName() {
     val mbean = new Example1
-    exporter.export(mbean)
-    val proxy = factory.proxyOf[Example1MBean]()
-    assertEquals(mbean.operation, proxy.operation)
+    try {
+      exporter.export(mbean)
+      val proxy = factory.proxyOf[Example1MBean]()
+      assertEquals(mbean.operation, proxy.operation)
+    } finally {
+      try { exporter.remove(mbean) } catch { case e: InstanceNotFoundException => () }
+    }
+
   }
 
   @Test
@@ -59,7 +64,7 @@ class MBeanProxyFactoyTest {
     val proxy = factory.proxyOf[Example2MXBean](objectName)
     assertEquals(mbean.operation, proxy.operation)
   }
-  
+
   @Test
   def test_dynamic_access_to_mbean() {
     val mbean = new AnnotatedObject
