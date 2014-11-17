@@ -29,6 +29,8 @@ libraryDependencies ++= Seq(
 
 scalacOptions ++= List("-feature", "-unchecked", "-deprecation", "-target:jvm-1.6", "-encoding", "UTF-8")
 testOptions += Tests.Argument(TestFrameworks.JUnit, "-q")
+parallelExecution in Test := false
+
 
 //scalariformSettings
 jacoco.settings
