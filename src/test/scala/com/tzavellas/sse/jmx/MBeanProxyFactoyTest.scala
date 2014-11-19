@@ -4,19 +4,14 @@
 \* ----------------------------------------------- */
 package com.tzavellas.sse.jmx
 
-import java.lang.management.ManagementFactory
 import javax.management.{ ObjectName, InstanceNotFoundException }
 import org.junit.{ Test, After }
 import org.junit.Assert._
-import com.tzavellas.sse.jmx.export.ObjectNamingStrategies
 import com.tzavellas.sse.jmx.export.Managed
 
 class MBeanProxyFactoyTest {
 
-  object factory extends MBeanProxyFactory {
-    val server = ManagementFactory.getPlatformMBeanServer
-    val namingStrategy = ObjectNamingStrategies.default
-  }
+  val factory = new MBeanProxyFactory
 
   val exporter = new export.MBeanExporter
   val objectName = new ObjectName("com.tzavellas.sse.jmx.test:type=Example")

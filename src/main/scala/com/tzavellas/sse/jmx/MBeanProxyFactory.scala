@@ -5,24 +5,20 @@
 package com.tzavellas.sse.jmx
 
 import language.dynamics
-import javax.management.ObjectName
-import javax.management.MBeanServerConnection
-import javax.management.JMX
-import javax.management.Attribute
+import javax.management.{ ObjectName, MBeanServerConnection, JMX, Attribute }
+import java.lang.management.ManagementFactory
+import com.tzavellas.sse.jmx.export.{ ObjectNamingStrategy, ObjectNamingStrategies }
 
 /**
  * Creates proxies for accessing MBeans.
+ *
+ * @param The connection to the MBean server.
+ * @param A function to derive an `ObjectName` from a class when no `ObjectName`
+ *        is specified.
  */
-trait MBeanProxyFactory {
-
-  /** The connection to the MBean server. */
-  def server: MBeanServerConnection
-
-  /**
-   * A function to derive an `ObjectName` from a class when no `ObjectName`
-   * is specified.
-   */
-  def namingStrategy: export.ObjectNamingStrategy
+class MBeanProxyFactory(
+  val server: MBeanServerConnection = ManagementFactory.getPlatformMBeanServer,
+  val namingStrategy: ObjectNamingStrategy = ObjectNamingStrategies.default) {
 
   /**
    * Create a proxy for accessing an standard MBean or an MXBean.
