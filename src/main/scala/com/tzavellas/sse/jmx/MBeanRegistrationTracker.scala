@@ -4,7 +4,6 @@
 \* ----------------------------------------------- */
 package com.tzavellas.sse.jmx
 
-import scala.collection.mutable.{HashSet, SynchronizedSet}
 import java.util.concurrent.ConcurrentHashMap
 import javax.management.{ObjectName, InstanceNotFoundException}
 
