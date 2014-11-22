@@ -28,6 +28,7 @@ libraryDependencies ++= Seq(
 )
 
 scalacOptions ++= List("-feature", "-unchecked", "-deprecation", "-target:jvm-1.6", "-encoding", "UTF-8")
+compileOrder := CompileOrder.JavaThenScala
 testOptions += Tests.Argument(TestFrameworks.JUnit, "-q")
 parallelExecution in Test := false
 

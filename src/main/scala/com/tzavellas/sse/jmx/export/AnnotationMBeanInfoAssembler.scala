@@ -6,6 +6,7 @@ package com.tzavellas.sse.jmx.export
 
 import java.lang.reflect.Method
 import javax.management.modelmbean._
+import com.tzavellas.sse.jmx.export.annotation.AnnotationReader
 
 /**
  * Creates {@code ModelMBeanInfo} from classes that are annotated with the
@@ -23,18 +24,17 @@ object AnnotationMBeanInfoAssembler extends MBeanInfoAssembler
   
   def attributes(c: Class[_]) = {
     val attrs =
-      for (field <- c.getDeclaredFields if field.isAnnotationPresent(classOf[Managed]))
+      for (field <- c.getDeclaredFields if AnnotationReader.hasManagedAnnotation(field))
       yield {
-        val managed = field.getAnnotation(classOf[Managed])
         val desc = new DescriptorSupport
-        val supportsWriting = hasWriter(c, field.getName) && !managed.readOnly
-        val description = if (managed.description == "") field.getName else managed.description
+        val supportsWriting = hasWriter(c, field.getName) && !AnnotationReader.getReadOnly(field)
+        val description = AnnotationReader.getDescription(field).getOrElse(field.getName)
         
         desc.setField("name", field.getName)
         desc.setField("descriptorType", "attribute")
         desc.setField("getMethod", field.getName)
         if (supportsWriting) desc.setField("setMethod", field.getName + "_$eq")
-        for (timeLimit <- translateTimeLimit(managed))
+        for (timeLimit <- translateTimeLimit(AnnotationReader.getCurrencyTimeLimit(field)))
           desc.setField("currencyTimeLimit", timeLimit)
         
         new ModelMBeanAttributeInfo(field.getName, field.getType.getName, description,
@@ -48,7 +48,7 @@ object AnnotationMBeanInfoAssembler extends MBeanInfoAssembler
     
   
   def operations(c: Class[_], attrs: Array[ModelMBeanAttributeInfo]) = {
-    def isOperation(m: Method) = m.isAnnotationPresent(classOf[Managed])
+    def isOperation(m: Method) = AnnotationReader.hasManagedAnnotation(m)
     def isAttributeMethod(m: Method) = attrs.exists { attr =>
       attr.getDescriptor.getFieldValue("getMethod") == m.getName ||
       attr.getDescriptor.getFieldValue("setMethod") == m.getName
@@ -64,20 +64,18 @@ object AnnotationMBeanInfoAssembler extends MBeanInfoAssembler
   }
   
   private def createOperationInfo(method: Method, role: String): ModelMBeanOperationInfo = {
-    val managed = method.getAnnotation(classOf[Managed])
-    def description = if (managed == null || managed.description.isEmpty) method.getName else managed.description
+    def description = AnnotationReader.getDescription(method).getOrElse(method.getName)
     val desc = new DescriptorSupport 
     desc.setField("name", method.getName)
     desc.setField("descriptorType", "operation")
     desc.setField("role", role)
-    for (timeLimit <- translateTimeLimit(managed))
+    for (timeLimit <- translateTimeLimit(AnnotationReader.getCurrencyTimeLimit(method)))
       desc.setField("currencyTimeLimit", timeLimit)
     new ModelMBeanOperationInfo(description, method, desc)
   }
   
-  private def translateTimeLimit(m: Managed) = {
-    if (m eq null) None
-    else CurrencyTimeLimitTranslator.translate(m.currencyTimeLimit)
+  private def translateTimeLimit(limit: Option[Int]) = {
+    CurrencyTimeLimitTranslator.translate(limit)
   }
 }
 
@@ -86,9 +84,9 @@ private object CurrencyTimeLimitTranslator {
   
   private val decade = 315360000
   
-  def translate(seconds: Int) = seconds match {
-    case _ if seconds < 0 => None
-    case 0                => Some(decade)
-    case _                => Some(seconds)
+  def translate(seconds: Option[Int]) = seconds match {
+    case None => None
+    case Some(x) if x == 0 => Some(decade)
+    case s                 => s
   }   
 }

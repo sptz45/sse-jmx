@@ -5,6 +5,7 @@
 package com.tzavellas.sse.jmx.export
 
 import javax.management.ObjectName
+import com.tzavellas.sse.jmx.export.annotation.AnnotationReader
 
 /**
  * Contains functions for creating an `ObjectName`s from classes.
@@ -51,7 +52,7 @@ object ObjectNamingStrategies {
    * the [[ManagedResource]] annotation.
    */
   val useAnnotation: ObjectNamingStrategy = {
-    case c if isAnnotationPresent(c) => getObjectNameFromAnnotation(c)
+    case c if isAnnotatedWithObjectName(c) => getObjectNameFromAnnotation(c)
   }
 
   /**
@@ -66,12 +67,12 @@ object ObjectNamingStrategies {
 
   // -- private helper methods ------------------------------------------------
 
-  private def isAnnotationPresent(c: Class[_]) = {
-    Option(c.getAnnotation(classOf[ManagedResource])).exists(_.objectName != "")
+  private def isAnnotatedWithObjectName(c: Class[_]) = {
+    AnnotationReader.getObjectName(c).isDefined
   }
 
   private def getObjectNameFromAnnotation(c: Class[_]) = {
-    new ObjectName(c.getAnnotation(classOf[ManagedResource]).objectName)
+    new ObjectName(AnnotationReader.getObjectName(c).get)
   }
 
   private def simpleNameOf(c: Class[_]): String = {
