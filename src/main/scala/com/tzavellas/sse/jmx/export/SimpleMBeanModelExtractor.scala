@@ -8,8 +8,8 @@ import javax.management.modelmbean._
 import java.lang.reflect.Method
 
 /**
- * Creates {@code ModelMBeanInfo} from classes using a simple set of conventions.
- * 
+ * Creates `ModelMBeanInfo` from classes using a simple set of conventions.
+ *
  * <p>This implementation will generate:</p>
  * <ul>
  * <li>an operation for every method that returns Unit</li>
@@ -17,18 +17,19 @@ import java.lang.reflect.Method
  * <li>a read-only attribute for every method that takes no arguments and returns
  * a non-Unit value</li>
  * </ul>
- * 
- * <p>The methods: {@code toString}, {@code getClass}, {@code clone}, {@code hashCode},
- * {@code wait}, {@code notify}, {@code notifyAll} and {@code equals} are not used
- * for the generation of the model MBean.</p> 
- * 
+ *
+ * The methods: `toString`, `getClass`, `clone`, `hashCode`,
+ * {@code wait}, `notify`, `notifyAll` and `equals` are not used
+ * for the generation of the model MBean.
  */
-object SimpleMBeanInfoAssembler extends MBeanInfoAssembler with MBeanModelExtractor {
-  
+class SimpleMBeanModelExtractor extends MBeanModelExtractor {
+
   val excludedAttributes = List("toString", "getClass", "clone", "hashCode")
-  
+
   val excludedOperations = List("wait", "notify", "notifyAll", "equals")
-  
+
+  def canExtractModel(c: Class[_]) = true
+
   def attributes(c: Class[_]) = {
     val methods = c.getMethods
     val attrs =
@@ -38,13 +39,13 @@ object SimpleMBeanInfoAssembler extends MBeanInfoAssembler with MBeanModelExtrac
         desc.setField("name", reader.getName)
         desc.setField("descriptorType", "attribute")
         desc.setField("getMethod", reader.getName)
-        
+
         val writerName = reader.getName + "_$eq"
         val hasWriter = methods.find(_.getName == writerName) != None
         if (hasWriter) desc.setField("setMethod", writerName)
-        
+
         new ModelMBeanAttributeInfo(reader.getName, // name
-                                    reader.getReturnType.getName, 
+                                    reader.getReturnType.getName,
                                     reader.getName, // description
                                     true,
                                     hasWriter,
@@ -53,10 +54,10 @@ object SimpleMBeanInfoAssembler extends MBeanInfoAssembler with MBeanModelExtrac
       }
     attrs.toArray[ModelMBeanAttributeInfo]
   }
-  
+
   private def findVals(methods: Array[Method]) =
     methods.filter(m =>m.getParameterTypes.isEmpty && m.getReturnType != classOf[Unit])
-  
+
   def operations(c: Class[_], attrs: Array[ModelMBeanAttributeInfo]) = {
     c.getMethods
      .filterNot(m => m.isSynthetic || m.isBridge)
@@ -64,9 +65,9 @@ object SimpleMBeanInfoAssembler extends MBeanInfoAssembler with MBeanModelExtrac
      .filter(m => isOperation(m) || isAttributeMethod(m, attrs))
      .map(m => new ModelMBeanOperationInfo(m.getName, m))
   }
-  
+
   private def isOperation(m: Method) = m.getParameterTypes.length == 0
-  
+
   private def isAttributeMethod(m: Method, attrs: Array[ModelMBeanAttributeInfo]) = {
     val name = m.getName().replaceAll("_$eq", "")
     attrs.find(_.getName == name) != None

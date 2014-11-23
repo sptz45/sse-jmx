@@ -14,18 +14,18 @@ import com.tzavellas.sse.jmx.JmxUtils
  * Exports objects to JMX.
  *
  * @param server         the MBeanServet to use of registering the objects
- * @param namingStrategy consulted during the creation of the ObjectName 
+ * @param namingStrategy consulted during the creation of the ObjectName
  * @param assembler      used to create MBean models for classes that are not MBeans
  * @param ifAlredyExists what to do when a MBean with the same name is already registered
  */
 final class MBeanExporter (
-  private val assembler: MBeanInfoAssembler = AnnotationMBeanInfoAssembler,
+  private val assembler: MBeanInfoAssembler = MBeanInfoAssembler.default,
   private[export] val namingStrategy: ObjectNamingStrategy = ObjectNamingStrategies.default,
   private val ifAlreadyExists: IfAlreadyExists.Enum = IfAlreadyExists.Fail,
   val server: MBeanServer = ManagementFactory.getPlatformMBeanServer)
     extends MBeanRegistrationSupport {
-  
-  
+
+
   /**
    * Export the specified object to JMX.
    *
@@ -71,5 +71,5 @@ final class MBeanExporter (
     }
     val mbean = if (JmxUtils.isMBean(ref.getClass)) ref else modelMBean
     registerMBean(mbean, name, ifAlreadyExists)
-  } 
+  }
 }

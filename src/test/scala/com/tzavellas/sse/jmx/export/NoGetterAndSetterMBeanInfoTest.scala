@@ -10,19 +10,19 @@ import javax.management.modelmbean.ModelMBeanInfo
 import java.io._
 
 class NoGetterAndSetterMBeanInfoTest {
-  
+
   @Test
   def attributes_are_removed_from_operations_after_serialization() {
-    val original = AnnotationMBeanInfoAssembler.createMBeanInfo(classOf[ManagedObject])
+    val original = MBeanInfoAssembler.default.createMBeanInfo(classOf[ManagedObject])
     val wrapped = new NoGetterAndSetterMBeanInfo(original)
     val serialized = serializeAndReadBack(wrapped)
-    
+
     assertHasOperations(original, "a", "b") // asserts JDK bug 6339571 still exists
     assertHasOperations(wrapped, "a", "b")  // asserts JDK bug 6339571 still exists
     assertHasNoOperations(serialized, "a", "b")
     assertHasOperations(serialized, "c")
   }
-  
+
   def serializeAndReadBack(ref: AnyRef) = {
     val bytes = new ByteArrayOutputStream
     val out = new ObjectOutputStream(bytes)
@@ -30,12 +30,12 @@ class NoGetterAndSetterMBeanInfoTest {
     val in = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray))
     in.readObject.asInstanceOf[ModelMBeanInfo]
   }
-  
+
   def assertHasOperations(info: ModelMBeanInfo, ops: String*) {
     for (op <- ops)
       assertTrue(info.getOperations.exists(_.getName == op))
   }
-  
+
   def assertHasNoOperations(info: ModelMBeanInfo, ops: String*) {
     for (op <- ops)
       assertFalse(info.getOperations.exists(_.getName == op))
