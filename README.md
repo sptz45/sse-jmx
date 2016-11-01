@@ -1,6 +1,6 @@
 # sse-jmx
 
-[![Build Status](https://secure.travis-ci.org/sptz45/sse-jmx.png)](http://travis-ci.org/sptz45/sse-jmx) ![Maven Central](http://img.shields.io/maven-central/v/com.tzavellas/sse-jmx.svg)
+[![Build Status](https://secure.travis-ci.org/sptz45/sse-jmx.png)](http://travis-ci.org/sptz45/sse-jmx)
 
 The aim of this library is to make working with *JMX* in *Scala* simpler.
 
@@ -59,7 +59,7 @@ class MyApplication {
 <dependency>
   <groupId>com.tzavellas</groupId>
   <artifactId>sse-jmx</artifactId>
-  <version>0.4.1</version>
+  <version>0.4.2</version>
 </dependency>
 ```
 
