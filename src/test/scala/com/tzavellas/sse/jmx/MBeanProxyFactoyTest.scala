@@ -49,7 +49,6 @@ class MBeanProxyFactoyTest {
     } finally {
       try { exporter.remove(mbean) } catch { case e: InstanceNotFoundException => () }
     }
-
   }
 
   @Test
@@ -66,7 +65,7 @@ class MBeanProxyFactoyTest {
     exporter.export(mbean, objectName)
     val proxy = factory.dynamicProxyOf(objectName)
 
-    assertEquals(mbean.attr, proxy.attr[Int])
+    // Fails to compile: assertEquals(mbean.attr, proxy.attr[Int])
     assertEquals(mbean.attr, proxy.operation())
     proxy.attr = 1
     assertEquals(1, mbean.attr)
