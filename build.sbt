@@ -3,7 +3,7 @@ name := "sse-jmx"
 description := "JMX Library for Scala"
 startYear := Some(2009)
 
-crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.2")
+crossScalaVersions := Seq("2.11.8", "2.12.2")
 releaseCrossBuild := true
 
 libraryDependencies ++= Seq(
