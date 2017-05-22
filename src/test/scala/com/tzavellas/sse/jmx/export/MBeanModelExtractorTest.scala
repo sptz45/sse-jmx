@@ -19,17 +19,17 @@ class MBeanModelExtractorTest {
   }
 
   @Test
-  def should_use_the_description_from_annotation() {
+  def should_use_the_description_from_annotation(): Unit = {
     assertEquals("the description", extractor.description(classOf[DescriptionInAnnotation]))
   }
 
   @Test
-  def should_use_simple_class_name_if_no_description_in_annotation() {
+  def should_use_simple_class_name_if_no_description_in_annotation(): Unit = {
     assertEquals("EmptyDescriptionInAnnotation", extractor.description(classOf[EmptyDescriptionInAnnotation]))
   }
 
   @Test
-  def should_use_simple_class_name_if_no_annotation() {
+  def should_use_simple_class_name_if_no_annotation(): Unit = {
     assertEquals("NoAnnotation", extractor.description(classOf[NoAnnotation]))
   }
 }

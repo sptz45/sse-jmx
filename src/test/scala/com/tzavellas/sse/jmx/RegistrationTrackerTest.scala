@@ -1,19 +1,20 @@
 package com.tzavellas.sse.jmx
 
 import java.lang.management.ManagementFactory
-import org.junit.After
+import javax.management.MBeanServer
+
 import org.junit.Test
 
 class RegistrationTrackerTest extends AbstractMBeanRegistrationTest {
   
   object registrar extends MBeanRegistrationSupport with MBeanRegistrationTracker {
-    val server = ManagementFactory.getPlatformMBeanServer
+    val server: MBeanServer = ManagementFactory.getPlatformMBeanServer
   }
 
-  def server = registrar.server
+  def server: MBeanServer = registrar.server
 
   @Test
-  def unregisterAll_remove_all_registered_mbeans_from_server() {
+  def unregisterAll_remove_all_registered_mbeans_from_server(): Unit = {
     registrar.registerMBean(mbean, objectName)
     assertRegistered(mbean)
     
@@ -22,7 +23,7 @@ class RegistrationTrackerTest extends AbstractMBeanRegistrationTest {
   }
   
   @Test
-  def unregisterAll_ignores_missing_mbeans() {
+  def unregisterAll_ignores_missing_mbeans(): Unit = {
     registrar.registerMBean(mbean, objectName)
     assertRegistered(mbean)
     

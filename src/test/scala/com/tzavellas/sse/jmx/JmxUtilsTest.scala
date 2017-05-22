@@ -10,13 +10,13 @@ import org.junit.Assert._
 class JmxUtilsTest {
 
   @Test
-  def should_detect_an_mbean() {
+  def should_detect_an_mbean(): Unit = {
     assertTrue(JmxUtils.isStandardMBean(classOf[Helper]))
     assertFalse(JmxUtils.isStandardMBean(classOf[String]))
   }
   
   @Test
-  def should_detect_an_standard_mbean_interface() {
+  def should_detect_an_standard_mbean_interface(): Unit = {
     assertTrue(JmxUtils.isStandardMBeanInterface(classOf[HelperMBean]))
     assertFalse(JmxUtils.isStandardMBeanInterface(classOf[HelperMXBean]))
     assertFalse(JmxUtils.isStandardMBeanInterface(classOf[ClassMBean]))
@@ -24,13 +24,13 @@ class JmxUtilsTest {
   }
   
   @Test
-  def should_detect_an_mxbean() {
+  def should_detect_an_mxbean(): Unit = {
     assertTrue(JmxUtils.isMXBean(classOf[Helper]))
     assertFalse(JmxUtils.isMXBean(classOf[String]))
   }
   
   @Test
-  def should_detect_an_standard_mxbean_interface() {
+  def should_detect_an_standard_mxbean_interface(): Unit = {
     assertTrue(JmxUtils.isMXBeanInterface(classOf[HelperMXBean]))
     assertFalse(JmxUtils.isMXBeanInterface(classOf[HelperMBean]))
     assertFalse(JmxUtils.isMXBeanInterface(classOf[ClassMXBean]))

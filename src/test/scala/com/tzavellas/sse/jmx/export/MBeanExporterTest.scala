@@ -4,19 +4,19 @@
 \* ----------------------------------------------- */
 package com.tzavellas.sse.jmx.export
 
-import javax.management.ObjectName
-import org.junit.{Test, After}
-import org.junit.Assert._
-import com.tzavellas.sse.jmx.IfAlreadyExists
 import javax.management.InstanceNotFoundException
+
+import com.tzavellas.sse.jmx.IfAlreadyExists
+import org.junit.Assert._
+import org.junit.Test
 
 class MBeanExporterTest {
   
-  val exporter = new MBeanExporter
-  val server   = exporter.server
+  private val exporter = new MBeanExporter
+  private def server   = exporter.server
 
   @Test
-  def register_an_object_as_model_mbean() {
+  def register_an_object_as_model_mbean(): Unit = {
     val conf = new Configuration
     exporter.export(conf)
     assertEquals(conf.reload, invoke[Configuration]("reload"))
@@ -26,7 +26,7 @@ class MBeanExporterTest {
   }
   
   @Test
-  def register_a_standard_mbean() {
+  def register_a_standard_mbean(): Unit = {
     val std = new Standard
     exporter.export(std)
     assertEquals(std.operation, invoke[Standard]("operation"))
@@ -34,7 +34,7 @@ class MBeanExporterTest {
   }
   
   @Test
-  def register_a_mx_mbean() {
+  def register_a_mx_mbean(): Unit = {
     val simple = new Simple
     exporter.export(simple)
     assertEquals(simple.mxOperation, invoke[Simple]("mxOperation"))
@@ -42,7 +42,7 @@ class MBeanExporterTest {
   }
   
   @Test
-  def change_the_already_exists_behavior() {
+  def change_the_already_exists_behavior(): Unit = {
     val conf1 = new Configuration
     val exporter = new MBeanExporter(ifAlreadyExists=IfAlreadyExists.Replace)
     exporter.export(conf1)
@@ -54,7 +54,7 @@ class MBeanExporterTest {
   }
 
   @Test
-  def remove_object_from_jmx() {
+  def remove_object_from_jmx(): Unit = {
     val conf = new Configuration
 
     try { exporter.remove(conf); fail("Should throw an InstanceNotFoundException") }

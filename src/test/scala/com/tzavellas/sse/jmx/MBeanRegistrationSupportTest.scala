@@ -12,25 +12,25 @@ import javax.management._
 class MBeanRegistrationSupportTest extends AbstractMBeanRegistrationTest {
   
   object registrar extends MBeanRegistrationSupport {
-    val server = ManagementFactory.getPlatformMBeanServer
+    val server: MBeanServer = ManagementFactory.getPlatformMBeanServer
   }
 
-  def server = registrar.server
+  def server: MBeanServer = registrar.server
   
   @After
-  def unregisterMBean() {
+  def unregisterMBean(): Unit = {
     try { server.unregisterMBean(objectName) } catch { case e: InstanceNotFoundException => }
     assertNotRegistered(mbean)
   }
 
   @Test
-  def registration_of_a_standard_mbean() {
+  def registration_of_a_standard_mbean(): Unit = {
     registrar.registerMBean(mbean, objectName)
     assertRegistered(mbean)
   }
   
   @Test(expected=classOf[InstanceAlreadyExistsException])
-  def when_behavior_is_fail_then_fail_if_mbean_already_exists() {
+  def when_behavior_is_fail_then_fail_if_mbean_already_exists(): Unit = {
     registrar.registerMBean(mbean, objectName)
     val mbean1 = new Simple(1)
     registrar.registerMBean(mbean1, objectName)
@@ -40,7 +40,7 @@ class MBeanRegistrationSupportTest extends AbstractMBeanRegistrationTest {
   }
   
   @Test
-  def when_behavior_ignore_no_registration_if_mbean_already_exists() {
+  def when_behavior_ignore_no_registration_if_mbean_already_exists(): Unit = {
     registrar.registerMBean(mbean, objectName)
     val mbean1 = new Simple(1)
     registrar.registerMBean(mbean1, objectName, IfAlreadyExists.Ignore)
@@ -50,7 +50,7 @@ class MBeanRegistrationSupportTest extends AbstractMBeanRegistrationTest {
   }
   
   @Test
-  def when_behavior_is_replace_the_mbean_gets_replaced() {
+  def when_behavior_is_replace_the_mbean_gets_replaced(): Unit = {
     registrar.registerMBean(mbean, objectName)
     val mbean1 = new Simple(1)
     registrar.registerMBean(mbean1, objectName, IfAlreadyExists.Replace)
@@ -60,7 +60,7 @@ class MBeanRegistrationSupportTest extends AbstractMBeanRegistrationTest {
   }
 
   @Test
-  def unregister_mbean() {
+  def unregister_mbean(): Unit = {
     registrar.registerMBean(mbean, objectName)
     assertRegistered(mbean)
     registrar.unregisterMBean(objectName)
@@ -68,12 +68,12 @@ class MBeanRegistrationSupportTest extends AbstractMBeanRegistrationTest {
   }
 
   @Test(expected=classOf[InstanceNotFoundException])
-  def exception_if_not_registered() {
+  def exception_if_not_registered(): Unit = {
     registrar.unregisterMBean(objectName)
   }
 
   @Test
-  def ignore_exception_if_not_registered() {
+  def ignore_exception_if_not_registered(): Unit = {
     registrar.unregisterMBean(objectName, ignore=true)
   }
 }

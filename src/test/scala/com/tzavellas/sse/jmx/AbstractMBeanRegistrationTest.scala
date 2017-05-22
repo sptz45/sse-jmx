@@ -19,7 +19,7 @@ abstract class AbstractMBeanRegistrationTest {
   trait SimpleMBean { def operation: Int }
   
   class Simple(val id: Int = 0) extends SimpleMBean {
-    def operation = id
+    def operation: Int = id
   }
   
   def assertRegistered(mbean: Simple) {

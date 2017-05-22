@@ -12,7 +12,7 @@ import java.io._
 class NoGetterAndSetterMBeanInfoTest {
 
   @Test
-  def attributes_are_removed_from_operations_after_serialization() {
+  def attributes_are_removed_from_operations_after_serialization(): Unit = {
     val original = MBeanInfoAssembler.default.createMBeanInfo(classOf[ManagedObject])
     val wrapped = new NoGetterAndSetterMBeanInfo(original)
     val serialized = serializeAndReadBack(wrapped)
@@ -23,7 +23,7 @@ class NoGetterAndSetterMBeanInfoTest {
     assertHasOperations(serialized, "c")
   }
 
-  def serializeAndReadBack(ref: AnyRef) = {
+  private def serializeAndReadBack(ref: AnyRef): ModelMBeanInfo = {
     val bytes = new ByteArrayOutputStream
     val out = new ObjectOutputStream(bytes)
     out.writeObject(ref)
@@ -31,12 +31,12 @@ class NoGetterAndSetterMBeanInfoTest {
     in.readObject.asInstanceOf[ModelMBeanInfo]
   }
 
-  def assertHasOperations(info: ModelMBeanInfo, ops: String*) {
+  private def assertHasOperations(info: ModelMBeanInfo, ops: String*) {
     for (op <- ops)
       assertTrue(info.getOperations.exists(_.getName == op))
   }
 
-  def assertHasNoOperations(info: ModelMBeanInfo, ops: String*) {
+  private def assertHasNoOperations(info: ModelMBeanInfo, ops: String*) {
     for (op <- ops)
       assertFalse(info.getOperations.exists(_.getName == op))
   }

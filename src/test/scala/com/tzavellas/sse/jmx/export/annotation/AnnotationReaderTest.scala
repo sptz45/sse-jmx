@@ -9,10 +9,10 @@ import org.junit.Assert._
 
 class AnnotationReaderTest {
 
-  val ar = AnnotationReader
+  private val ar = AnnotationReader
 
   @Test
-  def class_with_no_annotations() {
+  def class_with_no_annotations(): Unit = {
     assertFalse(ar.hasManagedResourceAnnotation(classOf[HasNoAnnotations]))
     assertEquals(None, ar.getResourceDescription(classOf[HasNoAnnotations]))
     assertEquals(None, ar.getObjectName(classOf[HasNoAnnotations]))
@@ -25,7 +25,7 @@ class AnnotationReaderTest {
   }
 
   @Test
-  def class_with_default_annotations() {
+  def class_with_default_annotations(): Unit = {
     assertTrue(ar.hasManagedResourceAnnotation(classOf[HasDefaultAnnotations]))
     assertEquals(Some("description"), ar.getResourceDescription(classOf[HasDefaultAnnotations]))
     assertEquals(Some("object-name"), ar.getObjectName(classOf[HasDefaultAnnotations]))
@@ -38,7 +38,7 @@ class AnnotationReaderTest {
   }
 
   @Test
-  def class_with_default_annotations_but_no_values() {
+  def class_with_default_annotations_but_no_values(): Unit = {
     assertTrue(ar.hasManagedResourceAnnotation(classOf[HasDefaultAnnotationsWithNoValues]))
     assertEquals(None, ar.getResourceDescription(classOf[HasDefaultAnnotationsWithNoValues]))
     assertEquals(None, ar.getObjectName(classOf[HasDefaultAnnotationsWithNoValues]))
@@ -51,7 +51,7 @@ class AnnotationReaderTest {
   }
 
   @Test
-  def class_with_custom_annotations() {
+  def class_with_custom_annotations(): Unit = {
     assertTrue(ar.hasManagedResourceAnnotation(classOf[HasCustomAnnotations]))
     assertEquals(Some("description"), ar.getResourceDescription(classOf[HasCustomAnnotations]))
     assertEquals(Some("object-name"), ar.getObjectName(classOf[HasCustomAnnotations]))
@@ -64,7 +64,7 @@ class AnnotationReaderTest {
   }
 
   @Test
-  def class_with_custom_annotations_but_no_values() {
+  def class_with_custom_annotations_but_no_values(): Unit = {
     assertTrue(ar.hasManagedResourceAnnotation(classOf[HasCustomAnnotationsWithNoValues]))
     assertEquals(None, ar.getResourceDescription(classOf[HasCustomAnnotationsWithNoValues]))
     assertEquals(None, ar.getObjectName(classOf[HasCustomAnnotationsWithNoValues]))
@@ -77,7 +77,7 @@ class AnnotationReaderTest {
   }
 
   @Test
-  def class_with_custom_annotations_but_no_properties() {
+  def class_with_custom_annotations_but_no_properties(): Unit = {
     assertTrue(ar.hasManagedResourceAnnotation(classOf[HasEmptyAnnotations]))
     assertEquals(None, ar.getResourceDescription(classOf[HasEmptyAnnotations]))
     assertEquals(None, ar.getObjectName(classOf[HasEmptyAnnotations]))
