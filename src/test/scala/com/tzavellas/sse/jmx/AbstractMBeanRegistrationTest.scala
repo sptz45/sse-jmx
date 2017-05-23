@@ -22,11 +22,11 @@ abstract class AbstractMBeanRegistrationTest {
     def operation: Int = id
   }
   
-  def assertRegistered(mbean: Simple) {
+  def assertRegistered(mbean: Simple): Unit = {
     assertEquals(mbean.operation, server.invoke(objectName, "operation", Array(), Array()))
   }
   
-  def assertNotRegistered(mbean: Simple) {
+  def assertNotRegistered(mbean: Simple): Unit = {
     try {
       val result = server.invoke(objectName, "operation", Array(), Array()).asInstanceOf[Int]
       assertTrue(mbean.operation != result)

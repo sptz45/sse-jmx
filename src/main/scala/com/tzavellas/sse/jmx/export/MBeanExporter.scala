@@ -13,10 +13,10 @@ import com.tzavellas.sse.jmx.JmxUtils
 /**
  * Exports objects to JMX.
  *
- * @param server         the MBeanServet to use of registering the objects
- * @param namingStrategy consulted during the creation of the ObjectName
- * @param assembler      used to create MBean models for classes that are not MBeans
- * @param ifAlredyExists what to do when a MBean with the same name is already registered
+ * @param server          the MBeanServet to use of registering the objects
+ * @param namingStrategy  consulted during the creation of the ObjectName
+ * @param assembler       used to create MBean models for classes that are not MBeans
+ * @param ifAlreadyExists what to do when a MBean with the same name is already registered
  */
 final class MBeanExporter (
   private val assembler: MBeanInfoAssembler = MBeanInfoAssembler.default,
@@ -34,9 +34,8 @@ final class MBeanExporter (
    *
    * @param ref the object to register
    */
-  def export(ref: AnyRef) {
+  def export(ref: AnyRef): Unit =
     export(ref, namingStrategy(ref.getClass))
-  }
 
   /**
    * Remove the specified object from JMX.
@@ -47,9 +46,8 @@ final class MBeanExporter (
    * @param ref    the object to remove from JMX.
    * @param ignore do not throw exception `ref` is not registered.
    */
-  def remove(ref: AnyRef, ignore: Boolean = false) {
+  def remove(ref: AnyRef, ignore: Boolean = false): Unit =
     unregisterMBean(namingStrategy(ref.getClass))
-  }
 
   /**
    * Export the specified object to JMX.
@@ -62,7 +60,7 @@ final class MBeanExporter (
    * @param ref  the object to register
    * @param name the `ObjectName` to use for registering the object
    */
-  def export(ref: AnyRef, name: ObjectName) {
+  def export(ref: AnyRef, name: ObjectName): Unit = {
     def modelMBean = {
       val info = new NoGetterAndSetterMBeanInfo(assembler.createMBeanInfo(ref.getClass))
       val model = new RequiredModelMBean(info)

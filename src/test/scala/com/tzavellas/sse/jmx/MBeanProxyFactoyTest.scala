@@ -18,7 +18,7 @@ class MBeanProxyFactoyTest {
 
   @After
   def unregisterMBean(): Unit = {
-    exporter.unregisterMBean(objectName, ignore=true)
+    exporter.unregisterMBean(objectName, ignoreErrors=true)
   }
 
   @Test(expected=classOf[IllegalArgumentException])

@@ -29,13 +29,13 @@ trait MBeanRegistrationSupport {
    * @param name     the `ObjectName` that will be used for registering the MBean
    * @param behavior what to do if an MBean with the same `ObjectName` is already registered 
    */
-  def registerMBean(mbean: AnyRef, name: ObjectName, behavior: IfAlreadyExists.Enum = Fail) {
+  def registerMBean(mbean: AnyRef, name: ObjectName, behavior: IfAlreadyExists.Enum = Fail): Unit = {
     if (server.isRegistered(name)) behavior match {
       case Ignore  => return
       case Fail    => throw new InstanceAlreadyExistsException(name.toString)
       case Replace =>
         try   { server.unregisterMBean(name) }
-        catch { case ignored: InstanceNotFoundException => () }
+        catch { case _: InstanceNotFoundException => () }
     }
     server.registerMBean(mbean, name)
   }
@@ -44,13 +44,12 @@ trait MBeanRegistrationSupport {
    * Unregister the MBean with the specified `ObjectName`.
    * 
    * @param name   the `ObjectName` of the MBean to unregister
-   * @param ignore do not throw exception if an MBean with the specified
+   * @param ignoreErrors do not throw exception if an MBean with the specified
    *               `ObjectName` is not found.
    */
-  def unregisterMBean(name: ObjectName, ignore: Boolean = false) {
+  def unregisterMBean(name: ObjectName, ignoreErrors: Boolean = false): Unit =
     try { server.unregisterMBean(name) }
-    catch { case e: InstanceNotFoundException if ignore =>  }
-  }
+    catch { case _: InstanceNotFoundException if ignoreErrors =>  }
 }
 
 

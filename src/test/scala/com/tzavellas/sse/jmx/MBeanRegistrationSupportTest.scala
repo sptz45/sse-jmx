@@ -5,7 +5,6 @@
 package com.tzavellas.sse.jmx
 
 import org.junit.{Test, After}
-import org.junit.Assert._
 import java.lang.management.ManagementFactory
 import javax.management._
 
@@ -74,6 +73,6 @@ class MBeanRegistrationSupportTest extends AbstractMBeanRegistrationTest {
 
   @Test
   def ignore_exception_if_not_registered(): Unit = {
-    registrar.unregisterMBean(objectName, ignore=true)
+    registrar.unregisterMBean(objectName, ignoreErrors=true)
   }
 }

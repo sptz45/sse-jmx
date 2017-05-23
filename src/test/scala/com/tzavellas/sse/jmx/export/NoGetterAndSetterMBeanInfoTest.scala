@@ -31,15 +31,13 @@ class NoGetterAndSetterMBeanInfoTest {
     in.readObject.asInstanceOf[ModelMBeanInfo]
   }
 
-  private def assertHasOperations(info: ModelMBeanInfo, ops: String*) {
+  private def assertHasOperations(info: ModelMBeanInfo, ops: String*): Unit =
     for (op <- ops)
       assertTrue(info.getOperations.exists(_.getName == op))
-  }
 
-  private def assertHasNoOperations(info: ModelMBeanInfo, ops: String*) {
+  private def assertHasNoOperations(info: ModelMBeanInfo, ops: String*): Unit =
     for (op <- ops)
       assertFalse(info.getOperations.exists(_.getName == op))
-  }
 
   class ManagedObject {
     @Managed var a: Int = 0

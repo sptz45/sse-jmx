@@ -12,8 +12,8 @@ import com.tzavellas.sse.jmx.export.{ ObjectNamingStrategy, ObjectNamingStrategi
 /**
  * Creates proxies for accessing MBeans.
  *
- * @param The connection to the MBean server.
- * @param A function to derive an `ObjectName` from a class when no `ObjectName`
+ * @param server the connection to the MBean server.
+ * @param namingStrategy a function to derive an `ObjectName` from a class when no `ObjectName`
  *        is specified.
  */
 class MBeanProxyFactory(
@@ -62,12 +62,11 @@ class MBeanProxyFactory(
 class DynamicMBeanProxy(server: MBeanServerConnection, name: ObjectName) extends Dynamic {
 
   /** Return the value of the specified attribute. */
-  def selectDynamic[A](attribute: String) = server.getAttribute(name, attribute).asInstanceOf[A]
+  def selectDynamic[A](attribute: String): A = server.getAttribute(name, attribute).asInstanceOf[A]
 
   /** Update the value of the specified attribute. */
-  def updateDynamic(attribute: String)(value: Any) {
+  def updateDynamic(attribute: String)(value: Any): Unit =
     server.setAttribute(name, new Attribute(attribute, value))
-  }
 
   /** Invoke the specified MBean operation. */
   def applyDynamic(operation: String)(args: Any*): Any = {

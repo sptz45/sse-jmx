@@ -9,19 +9,17 @@ import javax.management.{ObjectName, InstanceNotFoundException}
 
 /**
  * Tracks MBean registrations.
- *
- * @see [[unregisterAll]]
  */
 trait MBeanRegistrationTracker extends MBeanRegistrationSupport {
 
   private val registered = new ConcurrentHashMap[ObjectName, Unit]
 
-  abstract override def registerMBean(mbean: AnyRef, name: ObjectName, behavior: IfAlreadyExists.Enum = IfAlreadyExists.Fail) {
+  abstract override def registerMBean(mbean: AnyRef, name: ObjectName, behavior: IfAlreadyExists.Enum = IfAlreadyExists.Fail): Unit = {
     super.registerMBean(mbean, name, behavior)
     registered.putIfAbsent(name, ())
   }
 
-  abstract override def unregisterMBean(name: ObjectName, ignore: Boolean = false) {
+  abstract override def unregisterMBean(name: ObjectName, ignore: Boolean = false): Unit = {
     super.unregisterMBean(name)
     registered.remove(name)
   }
@@ -31,7 +29,7 @@ trait MBeanRegistrationTracker extends MBeanRegistrationSupport {
    *
    * @see [[registerMBean]]
    */
-  def unregisterAll() {
+  def unregisterAll(): Unit = {
     val names = registered.keySet.iterator
     while(names.hasNext) {
       try {
